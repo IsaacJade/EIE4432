@@ -1,0 +1,94 @@
+<html>
+<head>
+<title>Welcome to Out#Rage</title>
+<link rel="stylesheet" type="text/css" href="theme.css"/>
+<link rel="shortcut icon" type="image/x-icon" href="images/favorite.png"/>
+<script type="text/javascript">
+var xmlHttp;
+function ajaxFunction()
+{
+	xmlHttp=null;
+	if(window.XMLHttpRequest)
+	{
+		xmlHttp=new XMLHttpRequest();
+	}
+	else if(window.ActiveXObject)
+	{
+		xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	if(xmlHttp!=null)
+	{
+		xmlHttp.onreadystatechange=stateChange;
+		xmlHttp.open("POST","login.php",true);
+		xmlHttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		xmlHttp.send("username="+document.getElementById("username").value+"&password="+document.getElementById("password").value);
+	}
+	else
+	{
+		alert("Your browser does not support XMLHTTP.");
+	}
+}
+function stateChange()
+{
+	if(xmlHttp.readyState==4)
+	{
+		if(xmlHttp.status==200)
+		{
+			info.innerHTML=xmlHttp.responseText;
+		}
+		else
+		{
+			info.innerHTML="Problems in retriving data: "+xmlHttp.statusText;
+		}
+	}
+}
+</script>
+</head>
+<body>
+<div style="margin-top:120px;position:absolute;left:10%;width:80%;text-align:right;min-width:950px;min-height:600px;">
+<span class="info_block" style="display:inline-block;width:55%;height:370px;vertical-align:top;"></span>
+<span style="display:inline-block;width:5%;"></span>
+<span class="info_block" style="display:inline-block;width:25%;min-width:300px;height:370px;vertical-align:top;padding:30px;text-align:center;">
+<p id="info" style="display:inline-block;padding:0px;margin:0px;"><strong>Please login first</strong>
+</p>
+<form>
+<p>
+Username<br/>
+<input type="text" id="username" class="input_bar" style="text-align:center;">
+</p>
+<p>
+Password<br/>
+<input type="password" id="password" class="input_bar" style="text-align:center;">
+</p>
+<p>
+<input type="button" value="Login" onclick="ajaxFunction()" class="node_button">
+</p>
+</form>
+<p style="text-align:center;padding:15px;">
+-- OR --
+</p>
+<form>
+<p>
+<strong>Get a new account by</strong>
+</p>
+<p>
+<input type="button" value="Sign up" class="node_button" style="background-color:orange;">
+</p>
+</form>
+
+</span>
+
+</div>
+
+
+<!--Put the top bar at the end makes it on top of any other one-->
+<div class="top_bar" style="text-align:center;">
+<img src="images/logo.png" style="display:inline-block;max-height:30px;"/>
+</div>
+
+<div class="bottom_bar" style="text-align:center;">
+<span style="font-size:12px;color:#888888;">Copyright Out#Rage 2018</span>
+</div>
+
+</body>
+</html>
