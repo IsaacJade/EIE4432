@@ -1,56 +1,58 @@
-<!doctype html>
-
-<html>
-<head>
-<meta charset="utf-8">
-<title>无标题文档</title>
-</head>
-
-<body>
-	
-	
-  <?php 
-    session_start(); 
-    @$_SESSION["username"]=$_POST["username"]; 
-    @$_SESSION["password"]=$_POST['password']; 
-  	
-	
-	$con=mysqli_connect("localhost","root",""); 
-    if (!$con) { 
-      die ('数据库连接失败'.$mysql_error()); 
-    } 
-	mysqli_select_db($con,"users");
-    //mysql_select_db("users",$con); 
-    $dbusername=null; 
-    $dbpassword=null; 
-	
-	$query="select * from `users` where username ='".$_SESSION["username"]."'";
-    $result=mysqli_query($con,$query);
-	
-	//if(!$result) die("no information");
-	
-    while ($row=mysqli_fetch_array($result)) { 
-      $dbusername=$row["username"]; 
-      $dbpassword=$row["password"];
-	  
-    } 
-    if(is_null($dbusername)){ 
-		
-		
-   echo "用户名不存在";
-    
-	}else if($dbpassword!=$_SESSION["password"]){
-
-	
-		echo"密码错误";
-		
-  
-    } else{
-			header("location:index.html");
+<?php
+session_start();
+header("Content-type:application/xml");
+if(!(@$file=fopen("list.txt","r")))
+{
+	echo "Cannot access the login data";
+}
+else
+{
+	$find=false;
+	while((!feof($file))&&(!$find))
+	{
+		$line=fgets($file);
+		$line=rtrim($line);
+		$field=preg_split("/,/",$line);
+		if($_POST["username"]==$field[0])
+		{
+			if($_POST["password"]==$field[1])
+			{
+				$_SESSION["username"]=$field[0];
+				if(!(@$info=fopen("info.txt","r")))
+				{
+					echo "Cannot access the user info data<br/>";
+					echo "<a href=\"logout.php\">Destory Session</a><br/>";
+				}
+				else
+				{
+					while(!feof($info))
+					{
+						$line=fgets($info);
+						$line=rtrim($line);
+						$field=preg_split("/,/",$line);
+						if($field[0]==$_SESSION["username"])
+						{
+							$_SESSION["location"]=$field[1];
+							$_SESSION["signature"]=$field[2];
+							$_SESSION["profile"]=$field[3];
+							break;
+						}
+					}
+					fclose($info);
+				}
+				echo "<a style=\"color:blue;\">Login Successfully</a>";
+			}
+			else
+			{
+				echo "<a style=\"color:red;\">Wrong Password or Username</a>";
+			}
+			$find=true;
 		}
-
-	
-		mysqli_close($con);
-	?>
-</body>
-</html>
+	}
+	if($find==false)
+	{
+		echo "<a style=\"color:red;\">Username not Found</a>";
+	}
+	fclose($file);
+}
+?>

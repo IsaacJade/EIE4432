@@ -35,6 +35,10 @@ function stateChange()
 		if(xmlHttp.status==200)
 		{
 			info.innerHTML=xmlHttp.responseText;
+			if(xmlHttp.responseText=="<a style=\"color:blue;\">Login Successfully</a>")
+			{
+				window.location.href="index.php";
+			}
 		}
 		else
 		{
@@ -72,7 +76,7 @@ Password<br/>
 <strong>Get a new account by</strong>
 </p>
 <p>
-<input type="button" value="Sign up" class="node_button" style="background-color:orange;">
+<input type="button" value="Sign up" class="node_button" style="background-color:orange;" onclick="window.location.href='register.php'"/>
 </p>
 </form>
 
