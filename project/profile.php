@@ -65,7 +65,7 @@
 
 
 <?php
-	if((!isset($_GET["q"]))||($_GET["q"]=="posts"))
+	if((!isset($_GET["q"]))||($_GET["q"]=="post"))
 	{
 		foreach($articles as $article)
 		{
@@ -103,6 +103,10 @@
 	else if($_GET["q"]=="delete")
 	{
 		echo "<span class=\"info_block\" style=\"display:inline-block;width:100%;min-height:100px;vertical-align:left;text-align:left\"><span style=\"display:block;margin-top:20px;margin-left:50px;margin-bottom:20px;text-align:left;\">This is delete board</span></span><span style=\"display:inline-block;width:100%;height:30px;vertical-align:left;\"></span>";
+	}
+	else
+	{
+		header("location:profile.php?q=post");
 	}
 ?>
 <span style="display:inline-block;width=100%;height:70px;vertical-align:left;font-size:18px;color:grey;">-- End of Content --</span>
