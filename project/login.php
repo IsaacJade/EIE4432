@@ -1,26 +1,15 @@
-<!doctype html>
-
-<html>
-<head>
-<meta charset="utf-8">
-<title>无标题文档</title>
-</head>
-
-<body>
-	
-	
-  <?php 
+<?php 
+	//don't add code outside php
     session_start(); 
     @$_SESSION["username"]=$_POST["username"]; 
     @$_SESSION["password"]=$_POST['password']; 
   	
 	
-	$con=mysqli_connect("localhost","root",""); 
+	$con=mysqli_connect("localhost","root","","users"); 
     if (!$con) { 
-      die ('数据库连接失败'.$mysql_error()); 
+      die('数据库连接失败');
     } 
-	mysqli_select_db($con,"users");
-    //mysql_select_db("users",$con); 
+	
     $dbusername=null; 
     $dbpassword=null; 
 	
@@ -34,23 +23,15 @@
       $dbpassword=$row["password"];
 	  
     } 
-    if(is_null($dbusername)){ 
-		
-		
-   echo "用户名不存在";
-    
-	}else if($dbpassword!=$_SESSION["password"]){
-
-	
-		echo"密码错误";
-		
-  
-    } else{
-			header("location:index.html");
-		}
-
-	
+    if(is_null($dbusername)){ 	
+		echo "<a style=\"color:blue;font-weight:bold;\">User not exist</a>";
+	}
+	else if($dbpassword!=$_SESSION["password"]){
+		echo"<a style=\"color:blue;font-weight:bold;\">Wrong password</a>";
+    }
+	else{
+		echo "<a style=\"color:blue;font-weight:bold;\">Login Successfully</a>";
+	}
+		$result->free();
 		mysqli_close($con);
 	?>
-</body>
-</html>
