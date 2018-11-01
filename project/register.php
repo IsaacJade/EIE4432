@@ -54,7 +54,7 @@ function validateForm() {
 <div style="margin-top:120px;position:absolute;left:10%;width:80%;text-align:center;min-width:950px;min-height:600px;">
 <span class="info_block" style="display:inline-block;width:25%;min-width:300px;vertical-align:top;padding:30px;text-align:center;">
 
-<form name="register" method="POST" action="create_user.php" onsubmit="return validateForm()">
+<form name="register" method="POST" action="registration.php" onsubmit="return validateForm()">
 <p>
 Username<br/>
 <input type="text" placeholder="John" id="username" name="username" class="input_bar" style="text-align:center;">
@@ -71,7 +71,7 @@ Password<br/>
 
 <p>
 City<br/>
-<input type="text" placeholder="Hong Kong" id="city" name="location" class="input_bar" style="text-align:center;">
+<input type="text" placeholder="Hong Kong" id="city" name="city" class="input_bar" style="text-align:center;">
 </p><span style="color: red;font:italic;" id="warningcity"></span>
  <p> Gender:  
 	  <input type="radio" id="gender" name="gender" value="1" /> Male 

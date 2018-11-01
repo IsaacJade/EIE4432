@@ -54,7 +54,8 @@
   ?> 
   <script type="text/javascript"> 
     alert("User existed"); 
-    window.location.href="Registration.html"; 
+	<?php session_destroy(); ?>
+    window.location.href="register.php";
   </script> 
 	<?php
 	}
@@ -62,13 +63,14 @@
 	?>
 	<script type="text/javascript">
 		alert("The mailbox is already occupied");
-		window.location.href="Registration.html";
+		<?php session_destroy(); ?>
+		window.location.href="register.php";
 	</script>
   <?php 
     } 
 	
-    $con->query("insert into `users` (username,`password`,email,city,birthday,gender) values('".$_SESSION["username"]."','{$_SESSION["password"]}','{$email}','{$city}','{$birthday}','{$gender}')") or die("存入数据库失败" .mysqli_error($con)) ; 
-    $con->close;
+    $con->query("insert into `users` (username,`password`,email,city,birthday,gender) values('".$_SESSION["username"]."','".$_SESSION["password"]."','{$email}','{$city}','{$birthday}','{$gender}')") or die("存入数据库失败" .mysqli_error($con)) ; 
+    $con->close();
   ?> 
   <script type="text/javascript"> 
     alert("Registration Success"); 
