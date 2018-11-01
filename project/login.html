@@ -35,7 +35,7 @@ function stateChange()
 		if(xmlHttp.status==200)
 		{
 			info.innerHTML=xmlHttp.responseText;
-			if(xmlHttp.responseText=="<a style=\"color:blue;\">Login Successfully</a>")
+			if(xmlHttp.responseText=="<a style=\"color:blue;font-weight:bold;\">Login Successfully</a>")
 			{
 				window.location.href="index.php";
 			}
