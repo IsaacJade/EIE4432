@@ -1,9 +1,11 @@
 # EIE4432
 group project
 
-Overview/introduction
+Overview/Introduction
 
-Schudule/work division
+Schudule/Work division
+
+Objectives
 
 Techniques
 
