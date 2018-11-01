@@ -25,7 +25,7 @@
 	$birthday=$_SESSION["birthday"];
 	
     if (!$con) { 
-      die ('数据库连接失败'.$mysql_error()); 
+      die ('Database connection failed'.$mysql_error()); 
     } 
 	mysqli_select_db($con,"users");
     //mysql_select_db("users",$con); 
@@ -53,7 +53,7 @@
 		
   ?> 
   <script type="text/javascript"> 
-    alert("用户已存在"); 
+    alert("User existed"); 
     window.location.href="Registration.html"; 
   </script> 
 	<?php
@@ -61,7 +61,7 @@
 		if(!is_null($dbemail)){
 	?>
 	<script type="text/javascript">
-		alert("邮箱已被使用");
+		alert("The mailbox is already occupied");
 		window.location.href="Registration.html";
 	</script>
   <?php 
@@ -71,7 +71,7 @@
     $con->close;
   ?> 
   <script type="text/javascript"> 
-    alert("注册成功"); 
+    alert("Registration Success"); 
     window.location.href="login.html"; 
   </script> 
 	
