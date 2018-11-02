@@ -8,7 +8,7 @@ $_SESSION["post"]=$_POST["input"];
     } 
 mysqli_select_db($con,"users");
 date_default_timezone_set("Asia/Shanghai");
-echo "当前时间是 " . date("h:i:sa");
+
 $date=date("Y/m/d h:i:sa");
 echo $_SESSION["post"];
 
