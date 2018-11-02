@@ -4,16 +4,22 @@
 	{
 		header("location:login.html");
 	}
-	$articles=array();
-	$uas=scandir("articles/".$_SESSION["username"],1);
-	foreach($uas as $ua)
-	{
-		if(preg_match("/.txt$/",$ua))
-		{
-			array_push($articles,"articles/".$_SESSION["username"]."/".$ua);
-		}
-	}
+
+$con=mysqli_connect("localhost","root","");
+mysqli_select_db($con,"users");
+$query="select * from `post` where `username`='{$_SESSION["username"]}'";
+$result =mysqli_query($con,$query);
+$post_query="select post from `post` where `username`='{$_SESSION["username"]}'";
+$_SESSION["articles"]=mysqli_query($con,$post_query);
+
+//echo mysqli_num_rows($result);	
+	
+
+
+
+
 ?>
+
 <html>
 <head>
 <title><?php echo "Profile of ".$_SESSION["username"];?></title>
@@ -25,7 +31,15 @@
 
 <div style="position:absolute;top:270px;left:0px;width:100%;min-width:1200px;height:60px;background-color:white;box-shadow:0px 0px 4px grey;">
 <span style="position:absolute;left:20%;top:15px;">
-<a href="profile.php?q=post" class="main_button">Post<span style="padding-left:8px;font-size:16px;"><?php echo sizeof($articles);?></span></a>
+<a href="profile.php?q=post" class="main_button">Post<span style="padding-left:8px;font-size:16px;"><?php 
+	/*
+$query="select count(*) from `post` where `username`='{$_SESSION["username"]}'";
+$result =mysqli_query($con,$query);*/
+	//$row=mysqli_fetch_array($result);
+	
+echo mysqli_num_rows($result);
+	
+	?></span></a>
 <span class="division_line"></span>
 <a href="profile.php?q=following" class="main_button">Following<span style="padding-left:8px;font-size:16px;">68</span></a>
 <span class="division_line"></span>
@@ -45,9 +59,9 @@
 <div style="display:inline-block;width:20%;vertical-align:top;">
 <div class="info_block" style="display:inline-block;width:100%;padding:15px;">
 <table style="padding-left:10px;" cellspacing="10px">
-<tr><td style="vertical-align:top;padding-top:5px;"><img src="images/name.png" style="max-height:12px;max-width:12px;"></td><td style="padding-left:8px;"><?php echo $_SESSION["username"];?></td></tr>
-<tr><td style="vertical-align:top;padding-top:5px;"><img src="images/location.png" style="height:12px;width:12px;"></td><td style="padding-left:8px;"><?php echo $_SESSION["location"];?></td></tr>
-<tr><td style="vertical-align:top;padding-top:5px;"><img src="images/description.png" style="height:12px;width:12px;"></td><td style="padding-left:8px;"><?php echo $_SESSION["signature"];?></td></tr>
+<tr><td style="vertical-align:top;padding-top:5px;"><img src="images/name.png" style="max-height:12px;max-width:12px;"></td><td style="padding-left:8px;"><?php echo @$_SESSION["username"];?></td></tr>
+<tr><td style="vertical-align:top;padding-top:5px;"><img src="images/location.png" style="height:12px;width:12px;"></td><td style="padding-left:8px;"><?php echo @$_SESSION["location"];?></td></tr>
+<tr><td style="vertical-align:top;padding-top:5px;"><img src="images/description.png" style="height:12px;width:12px;"></td><td style="padding-left:8px;"><?php echo @$_SESSION["signature"];?></td></tr>
 <tr><td style="vertical-align:top;padding-top:5px;"><img src="images/pen.png" style="height:12px;width:12px;"></td><td style="padding-left:8px;"><a href="profile.php?q=edit">Edit my information</a></td></tr>
 <tr><td style="vertical-align:top;padding-top:5px;"><img src="images/pen.png" style="height:12px;width:12px;"></td><td style="padding-left:8px;"><a href="profile.php?q=delete">Delete my account</a></td></tr>
 </table>
@@ -65,22 +79,19 @@
 
 
 <?php
-	if((!isset($_GET["q"]))||($_GET["q"]=="post"))
-	{
-		foreach($articles as $article)
-		{
-			echo "<span class=\"info_block\" style=\"display:inline-block;width:100%;min-height:100px;vertical-align:left;text-align:left\">";
-			$content=fopen($article,"r");
-			echo "<span style=\"position:absoulte;top:0px;padding-left:10px;vertical-align:left;font-size:10px;\">".substr($article,-18,-14)."-".substr($article,-14,-12)."-".substr($article,-12,-10)."/".substr($article,-10,-8).":".substr($article,-8,-6).":".substr($article,-6,-4)."<br/></span><span style=\"display:block;margin-top:20px;margin-left:50px;margin-bottom:20px;text-align:left;\">";
-			while(!feof($content))
-			{
-				$line=fgets($content);
-				$line=rtrim($line);
-				echo $line."<br/>";
-			}
-			echo "</span></span><span style=\"display:inline-block;width:100%;height:30px;vertical-align:left;\"></span>";
-			fclose($content);
-		}
+	mysqli_select_db($con,"users");
+	$post_query="select `post_content` from `post` where `username`='{$_SESSION["username"]}'";
+$articles=mysqli_query($con,$post_query);
+
+	if((!isset($_GET["q"]))||($_GET["q"]=="post")){
+		while($row1=mysqli_fetch_array($articles)){
+			$post=$row1["post_content"];
+		echo "<span class=\"info_block\" style=\"display:inline-block;width:100%;min-height:100px;vertical-align:left;text-align:left\">";
+		
+			echo "<span style=\"position:absoulte;top:0px;padding-left:10px;vertical-align:left;font-size:30px;\">" .$post.
+				"<br/></span><span style=\"display:block;margin-top:20px;margin-left:50px;margin-bottom:20px;text-align:left;\"></span></span><span style='display:inline-block;height:20px;width:100%;min-width:300px;vertical-align:top;'></span>";
+		
+	}
 	}
 	else if($_GET["q"]=="following")
 	{
@@ -108,6 +119,7 @@
 	{
 		header("location:profile.php?q=post");
 	}
+
 ?>
 <span style="display:inline-block;width=100%;height:70px;vertical-align:left;font-size:18px;color:grey;">-- End of Content --</span>
 </div>
@@ -131,3 +143,4 @@
 
 </body>
 </html>
+
