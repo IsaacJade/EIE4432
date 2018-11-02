@@ -12,6 +12,23 @@
 <link rel="shortcut icon" type="image/x-icon" href="images/favorite.png"/>
 </head>
 <script type="text/javascript">
+
+
+function imagePreview() 
+{
+        var imgObj=document.getElementById("image"); 
+        var previewObj=document.getElementById("preview");
+        if(imgObj.files && imgObj.files[0])
+		{
+            previewObj.style.display = 'block';
+            previewObj.style.height = '300px';
+            previewObj.style.width = 'auto';
+			previewObj.style.align = 'center';		
+      		previewObj.src = window.URL.createObjectURL(imgObj.files[0]);
+        }
+         return true;
+ }
+
 function autoTAH(ta)
 {
 	clear_info();
@@ -20,6 +37,7 @@ function autoTAH(ta)
 		ta.style.height=ta.scrollTop+ta.scrollHeight+"px";
 	}
 }
+
 function create_new_post()
 {
 	if(document.getElementById("input").value=="")
@@ -39,10 +57,12 @@ function create_new_post()
 		}
 		if(xmlHttp!=null)
 		{
+			var form = document.getElementById("postform");
+			var formData=new FormData(form);
 			xmlHttp.onreadystatechange=stateChange;
 			xmlHttp.open("POST","create_post.php",true);
-			xmlHttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-		xmlHttp.send("input="+document.getElementById("input").value);
+			//xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=utf-8");
+			xmlHttp.send(formData);
 		}
 		else
 		{
@@ -55,7 +75,7 @@ function stateChange()
 	if(xmlHttp.readyState==4)
 	{
 		if(xmlHttp.status==200)
-		{
+		{	document.getElementById("input_info").innerHTML=xmlHttp.responseText;
 			if(xmlHttp.responseText=="suc")
 			{
 				document.getElementById("input_info").innerHTML="Post Successfully";
@@ -78,8 +98,13 @@ function clear_info()
 <div style="margin-top:120px;position:absolute;width:80%">
 
 <div style="display:inline-block;width:60%;min-width:300px;min-height:100px;vertical-align:top;">
+<form name="postform" id="postform">
+<textarea id="input" name="input" type="text" form="postform" autofocus="autofocus" type="text" style="text-align:left;top:0px;left:0px;width:100%;height:180px;resize:vertical;padding:10px;text-decoration:none;box-shadow:0px 0px 3px 0px grey;font-size:20px;" oninput="autoTAH(this)"></textarea>
 
-<textarea id="input" name="input" type="text" autofocus="autofocus" type="text" style="text-align:left;top:0px;left:0px;width:100%;height:180px;resize:vertical;padding:10px;text-decoration:none;box-shadow:0px 0px 3px 0px grey;font-size:20px;" oninput="autoTAH(this)"></textarea>
+Choose an image: <input type="file" name="image" id="image" accept=".jpg,.png" onchange="javascript:imagePreview();">
+</form>
+<div style="align:center; "><img id="preview" width=-1 height=-1 style="diplay:none "/></div>
+
 <span style="display:inline-block;width:100%;height:30px;vertical-align:left;text-align:right;margin-top:15px;"><span id="input_info" style="color:#888888;text-decoration:none;margin-right:30px"></span><input type="button" value="Submit" class="node_button" onclick="create_new_post()"/></span>
 
 <span style="display:inline-block;height:30px;vertical-align:left;"></span>
