@@ -109,34 +109,30 @@ Choose an image: <input type="file" name="image" id="image" accept=".jpg,.png" o
 
 <span style="display:inline-block;height:30px;vertical-align:left;"></span>
 <?php
-	$artdir="articles";
-	$articles=array();
-	$userdirs=scandir($artdir);
-	foreach($userdirs as $userdir)
-	{
-		$uas=scandir($artdir."/".$userdir,1);
-		foreach($uas as $ua)
-		{
-			if((preg_match("/.txt$/",$ua))&&(!preg_match("/\./",$userdir)))
-			{
-				array_push($articles,$artdir."/".$userdir."/".$ua);
-			}
-		}
-	}
-	foreach($articles as $article)
-	{
+
+	$con=mysqli_connect("localhost","root","","users"); 
+    if (!$con) { 
+      die('database connect error');
+    }
+	$query="select `username`,`post_time`,`post_content`,`post_picture` from `post` order by `post_time` desc";
+	$result=mysqli_query($con,$query);
+	$result->data_seek(0);
+	while($row=$result->fetch_assoc()){
+	$time=preg_split("/_/",$row["post_time"]);
 		echo "<span class=\"info_block\" style=\"display:inline-block;width:100%;min-height:100px;vertical-align:left;text-align:left\">";
-		$content=fopen($article,"r");
-		echo "<span style=\"position:absoulte;top:0px;padding-left:10px;vertical-align:left;font-size:10px;\">".substr($article,-18,-14)."-".substr($article,-14,-12)."-".substr($article,-12,-10)."/".substr($article,-10,-8).":".substr($article,-8,-6).":".substr($article,-6,-4)." by ".preg_split("/\//",$article)[1]."<br/></span><span style=\"display:block;margin-top:20px;margin-left:50px;margin-bottom:20px;text-align:left;\">";
-		while(!feof($content))
-		{
-			$line=fgets($content);
-			$line=rtrim($line);
-			echo $line."<br/>";
-		}
+
+		echo "<span style=\"position:absoulte;top:0px;padding-left:10px;vertical-align:left;font-size:10px;\">".$time[0]."-".$time[1]."-".$time[2]."/".$time[3].":".$time[4].":".$time[5]." by ".$row["username"]."<br/></span><span style=\"display:block;margin-top:20px;margin-left:50px;margin-bottom:20px;text-align:left;\">";
+		
+			echo $row["post_content"]."<br/><br/>";
+			if($row["post_picture"] != "no pic")
+			{
+				echo "<img src = ".$row["post_picture"]." style=\"max-width:100%\"/> <br/>";
+			}
 		echo "</span></span><span style=\"display:inline-block;width:100%;height:30px;vertical-align:left;\"></span>";
-		fclose($content);
 	}
+	$result->free();
+	$con->close();
+	
 ?>
 <span style="display:inline-block;width=100%;height:70px;vertical-align:left;font-size:18px;color:grey;">-- End of Content --</span>
 
@@ -148,12 +144,12 @@ Choose an image: <input type="file" name="image" id="image" accept=".jpg,.png" o
 <span class="info_block" style="display:inline-block;width:100%;min-width:300px;vertical-align:top;">
 <form style="margin:30px;">
 <p>
-<img class="headerimg" src="./profiles/<?php echo $_SESSION["profile"];?>"/>
+<img class="headerimg" src="./<?php echo $_SESSION["profile"];?>"/>
 </p>
 <table style="padding-left:10px;" cellspacing="10px">
 <tr><td style="vertical-align:top;padding-top:5px;"><img src="images/name.png" style="max-height:12px;max-width:12px;"></td><td style="padding-left:8px;"><?php echo $_SESSION["username"];?></td></tr>
-<tr><td style="vertical-align:top;padding-top:5px;"><img src="images/location.png" style="height:12px;width:12px;"></td><td style="padding-left:8px;"><?php echo $_SESSION["location"];?></td></tr>
-<tr><td style="vertical-align:top;padding-top:5px;"><img src="images/description.png" style="height:12px;width:12px;"></td><td style="padding-left:8px;"><?php echo $_SESSION["signature"];?></td></tr>
+<tr><td style="vertical-align:top;padding-top:5px;"><img src="images/location.png" style="height:12px;width:12px;"></td><td style="padding-left:8px;"><?php echo $_SESSION["city"];?></td></tr>
+<tr><td style="vertical-align:top;padding-top:5px;"><img src="images/description.png" style="height:12px;width:12px;"></td><td style="padding-left:8px;"><?php echo $_SESSION["email"];?></td></tr>
 </table>
 </form>
 </span>

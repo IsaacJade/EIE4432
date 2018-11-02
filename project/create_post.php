@@ -26,4 +26,6 @@
 	$con->query("insert into `post` (`username`,`post_time`,`post_content`,`post_picture`) values('".$_SESSION["username"]."','".$date."','".$_POST["input"]."','".$pic."')") or die("insert data error" .mysqli_error($con)) ; 
     $con->close();
 	echo "suc";
+	
+
 ?>
