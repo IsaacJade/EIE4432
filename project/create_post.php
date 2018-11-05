@@ -14,6 +14,9 @@
 	$date = date("Y_m_d_H_i_s");
 	if ($_FILES["image"]["name"]!= null)
 	{
+		if (!is_dir("image_DB/")){
+			mkdir("image_DB/");
+		}
 		if (!is_dir("image_DB/".$_SESSION["username"])){
 			mkdir("image_DB/".$_SESSION["username"]);
 		}
