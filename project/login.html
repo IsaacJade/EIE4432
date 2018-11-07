@@ -5,6 +5,14 @@
 <link rel="shortcut icon" type="image/x-icon" href="images/favorite.png"/>
 <script type="text/javascript">
 var xmlHttp;
+	function keylogin(){
+		if(event.keyCode==13){
+			document.getElementById("login").click();	
+			
+		}
+	}
+	
+
 function ajaxFunction()
 {
 	xmlHttp=null;
@@ -48,7 +56,7 @@ function stateChange()
 }
 </script>
 </head>
-<body>
+<body onkeydown="keylogin();">
 <div style="margin-top:120px;position:absolute;left:10%;width:80%;text-align:right;min-width:950px;min-height:600px;">
 <span class="info_block" style="display:inline-block;width:55%;height:370px;vertical-align:top;"></span>
 <span style="display:inline-block;width:5%;"></span>
@@ -65,7 +73,7 @@ Password<br/>
 <input type="password" id="password" class="input_bar" style="text-align:center;">
 </p>
 <p>
-<input type="button" value="Login" onclick="ajaxFunction()" class="node_button">
+<input type="button" id= "login" value="Login" onclick="ajaxFunction()" class="node_button">
 </p>
 </form>
 <p style="text-align:center;padding:15px;">
