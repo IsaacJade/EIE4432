@@ -40,7 +40,8 @@ function autoTAH(ta)
 
 function create_new_post()
 {
-	if(document.getElementById("input").value=="")
+	//document.getElementById("input_info").innerHTML=document.getElementById("image").name;
+	if((document.getElementById("input").value=="")&&(document.getElementById("image").value==""))
 	{
 		document.getElementById("input_info").innerHTML="Cannot post null content";
 	}
@@ -121,7 +122,7 @@ Choose an image: <input type="file" name="image" id="image" accept=".jpg,.png" o
 	$time=preg_split("/_/",$row["post_time"]);
 		echo "<span class=\"info_block\" style=\"display:inline-block;width:100%;min-height:100px;vertical-align:left;text-align:left\">";
 
-		echo "<span style=\"position:absoulte;top:0px;padding-left:10px;vertical-align:left;font-size:10px;\">".$time[0]."-".$time[1]."-".$time[2]."/".$time[3].":".$time[4].":".$time[5]." by ".$row["username"]."<br/></span><span style=\"display:block;margin-top:20px;margin-left:50px;margin-bottom:20px;text-align:left;\">";
+		echo "<span style=\"position:absoulte;top:0px;padding-left:10px;vertical-align:left;font-size:10px;\">".@$time[0]."-".@$time[1]."-".@$time[2]."/".@$time[3].":".@$time[4].":".@$time[5]." by ".@$row["username"]."<br/></span><span style=\"display:block;margin-top:20px;margin-left:50px;margin-bottom:20px;text-align:left;\">";
 		
 			echo $row["post_content"]."<br/><br/>";
 			if($row["post_picture"] != "no pic")
