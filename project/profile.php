@@ -12,8 +12,24 @@
 		$result_num=mysqli_query($con,$query_num);
 		$result_num->data_seek(0);
 		$row_num=$result_num->fetch_assoc();
-		$query_post="select `username`,`post_time`,`post_content`,`post_picture` from `post` where `username` = \"".$_SESSION["username"]."\" order by `post_time` desc";
+		$post_num = $row_num["num"];
 		$result_num->free();
+		
+		$query_num = "select *, count(*) as `num` from `relation` where `userone` = \"".$_SESSION["username"]."\"";
+		$result_num=mysqli_query($con,$query_num);
+		$result_num->data_seek(0);
+		$row_num=$result_num->fetch_assoc();
+		$following_num = $row_num["num"];
+		$result_num->free();
+		
+		$query_num = "select *, count(*) as `num` from `relation` where `usertwo` = \"".$_SESSION["username"]."\"";
+		$result_num=mysqli_query($con,$query_num);
+		$result_num->data_seek(0);
+		$row_num=$result_num->fetch_assoc();
+		$follower_num = $row_num["num"];
+		$result_num->free();
+		
+		$query_post="select `username`,`post_time`,`post_content`,`post_picture` from `post` where `username` = \"".$_SESSION["username"]."\" order by `post_time` desc";
 ?>
 <html>
 <head>
@@ -42,11 +58,11 @@
 
 <div style="position:absolute;top:270px;left:0px;width:100%;min-width:1200px;height:60px;background-color:white;box-shadow:0px 0px 4px grey;">
 <span style="position:absolute;left:20%;top:15px;">
-<a href="profile.php?q=post" class="main_button">Post<span style="padding-left:8px;font-size:16px;"><?php echo $row_num["num"];?></span></a>
+<a href="profile.php?q=post" class="main_button">Post<span style="padding-left:8px;font-size:16px;"><?php echo $post_num;?></span></a>
 <span class="division_line"></span>
-<a href="profile.php?q=following" class="main_button">Following<span style="padding-left:8px;font-size:16px;">68</span></a>
+<a href="profile.php?q=following" class="main_button">Following<span style="padding-left:8px;font-size:16px;"><?php echo $following_num;?></span></a>
 <span class="division_line"></span>
-<a href="profile.php?q=follower" class="main_button">Follower<span style="padding-left:8px;font-size:16px;">15</span></a>
+<a href="profile.php?q=follower" class="main_button">Follower<span style="padding-left:8px;font-size:16px;"><?php echo $follower_num;?></span></a>
 <span class="division_line"></span>
 <a href="profile.php?q=like" class="main_button">Like<span style="padding-left:8px;font-size:16px;">104</span></a>
 </span>
