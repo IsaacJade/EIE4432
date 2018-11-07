@@ -18,6 +18,23 @@
 ?>
 <html>
 <head>
+	<script type="text/javascript">
+	function imagePreview() 
+{
+        var imgObj=document.getElementById("image"); 
+        var previewObj=document.getElementById("preview");
+        if(imgObj.files && imgObj.files[0])
+		{
+            previewObj.style.display = 'block';
+            previewObj.style.height = '300px';
+            previewObj.style.width = 'auto';
+			previewObj.style.align = 'center';		
+      		previewObj.src = window.URL.createObjectURL(imgObj.files[0]);
+        }
+         return true;
+ }
+
+	</script>
 <title><?php echo "Profile of ".$_SESSION["username"];?></title>
 <link rel="stylesheet" type="text/css" href="theme.css"/>
 <link rel="shortcut icon" type="image/x-icon" href="images/favorite.png"/>
@@ -102,8 +119,23 @@
 	}
 	else if($_GET["q"]=="edit")
 	{
-		echo "<span class=\"info_block\" style=\"display:inline-block;width:100%;min-height:100px;vertical-align:left;text-align:left\"><span style=\"display:block;margin-top:20px;margin-left:50px;margin-bottom:20px;text-align:left;\">";
-		echo "<form method=\"POST\" action=\"change_info.php\"> <p> <h3>Info Change</h3> </p> <p> <table cellspacing=\"10\"> <tr><td>Location:</td><td><input type=\"text\" name=\"location\" size=\"32\"/></td></tr> <tr><td>E-mail:</td><td><input type=\"text\" name=\"email\" size=\"32\"/></td></tr> <tr><td>Birth Date:</td><td><input type=\"text\" name=\"birdate\" size=\"32\"/></td></tr> <tr><td>Gender:</td><td><input type=\"text\" name=\"gender\" size=\"32\"/></td></tr> <tr><td>Self Description:</td><td><input type=\"text\" name=\"seldes\" size=\"32\"/></td></tr> <tr><td>Profile Picture:</td><td><input type=\"text\" name=\"pro\" size=\"32\"/></td></tr> <tr><td>Profile Background:</td><td><input type=\"text\" name=\"probg\" size=\"32\"/></td></tr> <tr><td></td><td><input type=\"submit\" class=\"node_button\" value=\"Change\"/></td></tr> </table> </p> </form>";
+		echo "<span class=\"info_block\" style=\"display:inline-block;width:100%;min-height:100px;vertical-align:left;text-align:left\"><span style=\"display:block;margin-top:20px;margin-left:50px;margin-bottom:20px;text-align:left;\">";?>
+	
+		<form method="POST" action="change_info.php">
+			<p> <h3>Info Change</h3> </p>
+			<p> <table cellspacing="10"> <tr><td>
+	Location:</td><td><input type="text" name="location" size="32"/></td></tr> <tr><td>
+	E-mail:</td><td><input type="text" name="email" size="32"/></td></tr> <tr><td>
+	Birth Date:</td><td><input type="text" name="birdate" size="32"/></td></tr> <tr><td>
+	Gender:</td><td><input type="text" name="gender" size="32"/></td></tr> <tr><td>
+	Self Description:</td><td><input type="text" name="seldes" size="32"/></td></tr> <tr><td>
+	Profile Picture:</td><td><input type="file" name="image" id="image" accept=".jpg,.png" onchange="javascript:imagePreview();" /></td></tr> <tr><td>
+	
+	Profile Background:</td><td><input type="text" name="probg" size="32"/></td></tr> <tr><td></td><td>
+	<input type="submit" class="node_button" value="Change"/></td></tr> </table> </p> 
+	</form>
+	<div style="align:center; "><img id="preview" width=-1 height=-1 style="diplay:none "/></div>
+		<?php
 		echo "</span></span><span style=\"display:inline-block;width:100%;height:30px;vertical-align:left;\"></span>";
 	}
 	else if($_GET["q"]=="delete")
