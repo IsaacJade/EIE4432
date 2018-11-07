@@ -14,7 +14,6 @@
 		$row_num=$result_num->fetch_assoc();
 		$query_post="select `username`,`post_time`,`post_content`,`post_picture` from `post` where `username` = \"".$_SESSION["username"]."\" order by `post_time` desc";
 		$result_num->free();
-
 ?>
 <html>
 <head>
@@ -33,7 +32,6 @@
         }
          return true;
  }
-
 	</script>
 <title><?php echo "Profile of ".$_SESSION["username"];?></title>
 <link rel="stylesheet" type="text/css" href="theme.css"/>
@@ -92,7 +90,6 @@
 		while($row=$result->fetch_assoc()){
 		$time=preg_split("/_/",$row["post_time"]);
 			echo "<span class=\"info_block\" style=\"display:inline-block;width:100%;min-height:100px;vertical-align:left;text-align:left\">";
-
 			echo "<span style=\"position:absoulte;top:0px;padding-left:10px;vertical-align:left;font-size:10px;\">".$time[0]."-".$time[1]."-".$time[2]."/".$time[3].":".$time[4].":".$time[5]." by ".$row["username"]."<br/></span><span style=\"display:block;margin-top:20px;margin-left:50px;margin-bottom:20px;text-align:left;\">";
 			
 				echo $row["post_content"]."<br/><br/>";
@@ -103,7 +100,6 @@
 			echo "</span></span><span style=\"display:inline-block;width:100%;height:30px;vertical-align:left;\"></span>";
 		}
 		$result->free();
-
 	}
 	else if($_GET["q"]=="following")
 	{
@@ -130,12 +126,12 @@
 		$ori_gender = $row_edit["gender"];
 		?>
 	
-		<form method="POST" action="profile.php?q=change">
+		<form method="POST" action="profile.php?q=change" enctype="multipart/form-data">
 			<p> <h3>Info Change</h3> </p>
 			<p> <table cellspacing="10"> <tr><td>
-	Location:</td><td><input type="text" name="location" size="32" value = "<?php echo"$ori_city"?>"/></td></tr> <tr><td>
+	Location:</td><td><input type="text" name="city" size="32" value = "<?php echo"$ori_city"?>"/></td></tr> <tr><td>
 	E-mail:</td><td><input type="text" name="email" size="32" value = "<?php echo"$ori_email" ?>"/></td></tr> <tr><td>
-	Birth Date:</td><td><input type="date" name="birdate" size="32" value = "<?php echo"$ori_birthday" ?>"/></td></tr> <tr><td>
+	Birth Date:</td><td><input type="date" name="birthday" size="32" value = "<?php echo"$ori_birthday" ?>"/></td></tr> <tr><td>
 	Gender:</td><td><input type="radio" id="gender" name="gender" value="1" /> Male 
 					<input type="radio" id="gender" name="gender" value="2" /> Female
 				    <input type="radio" id="gender" name="gender" value="3" /> Both
@@ -155,14 +151,38 @@
 	}
 	else if($_GET["q"]=="change")
 	{
-
 		$change_email=$_POST["email"];
 		$change_city=$_POST['city'];
 		$change_gender=$_POST['gender'];
 		$change_birthday=$_POST['birthday'];
 		
+		if ($_FILES["image"]["name"]!= null)
+	{
+		if (!is_dir("image_DB/")){
+			mkdir("image_DB/");
+		}
+		if (!is_dir("image_DB/".$_SESSION["username"])){
+			mkdir("image_DB/".$_SESSION["username"]);
+		}
+		$image_type = strrchr($_FILES["image"]["name"], '.');
+		$_FILES["image"]["name"] = "header".$image_type;
+		$pic_url="image_DB/".$_SESSION["username"]."/".$_FILES["image"]["name"];
+		move_uploaded_file($_FILES["image"]["tmp_name"],$pic_url);
+		$pic = $pic_url;
+	}
+		if (!$con) { 
+		  die('database connect error');
+		}
+		if($pic==""){
+			$query="update `users` set `email`='{$change_email}',`city`='{$change_city}',`gender`='{$change_gender}',`birthday`='{$change_birthday}',where `username`='{$_SESSION["username"]}'";
+			
+		}else {
+			$query="update `users` set `email`='{$change_email}',`city`='{$change_city}',`gender`='{$change_gender}',`birthday`='{$change_birthday}',`profile`='{$pic}' where `username`='{$_SESSION["username"]}'";
+			$_SESSION["profile"]=$pic;
+		}
 		
 		
+		$result_num=mysqli_query($con,$query) or die("update failed".mysqli_error($con));
 		
 		
 		
