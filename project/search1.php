@@ -5,13 +5,6 @@
 <link rel="shortcut icon" type="image/x-icon" href="images/favorite.png"/>
 </head>
 <script type="text/javascript">
-function autoTAH(ta)
-{
-	if(ta.scrollTop+ta.scrollHeight>180)
-	{
-		ta.style.height=ta.scrollTop+ta.scrollHeight+"px";
-	}
-}
 function submitForm()
 {
 	document.getElementById("sf").submit();
@@ -25,10 +18,10 @@ function submitForm()
 
 <span class="info_block" style="display:inline-block;width:100%;min-height:100px;vertical-align:left;background-color:grey;">
 <span style="display:block;margin-top:30px;margin-left:50px;margin-bottom:20px;text-align:left;">
-<form id="sf" action="search1.php" method="POST">
+<form id="sf" action="search.php" method="POST">
 <input type="text" class="input_bar" name="content" style="width:70%;" placeholder="Search"/><input type="button" value="Submit" class="node_button" style="display:inline-block;margin-left:20px;" onclick="submitForm()"/>
 </form>
-<form id="cf" style="color:white;font-size:15px;" action="search1.php" method="GET">
+<form id="cf" style="color:white;font-size:15px;" action="search.php" method="GET">
 <input type="radio" name="class" value="total" checked="checked"/>Total
 <input type="radio" name="class" value="users"/>Users
 <input type="radio" name="class" value="post"/>Post
