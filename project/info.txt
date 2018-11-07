@@ -1,9 +1,0 @@
-name1,Hong Kong 1,student 1,index1.jpg
-name2,Hong Kong 2,student 2,index2.jpg
-name3,Hong Kong 3,student 3,index3.jpg
-name4,Hong Kong 4,student 4,index4.jpg
-name5,Hong Kong 5,student 5,index5.jpg
-name6,Hong Kong 6,student 6,index6.jpg
-Chan_Taiman,Hong Kong,student 7,index.jpg
-john,HK,self-description,index1.jpg,sss@sss.com,1,2018-10-25
-john,HK,self-description,index1.jpg,sss@sss.com,1,2018-10-25
