@@ -1,5 +1,8 @@
 # EIE4432
+
 group project
+
+## Structure
 
 Overview/Introduction
 
