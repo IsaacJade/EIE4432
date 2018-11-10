@@ -10,6 +10,20 @@
 <title>Out#Rage</title>
 <link rel="stylesheet" type="text/css" href="theme.css"/>
 <link rel="shortcut icon" type="image/x-icon" href="images/favorite.png"/>
+<script type="text/javascript">
+function submitCheck(f)
+{
+	if(f.value=="")
+	{
+		alert("Cannot search without keyword");
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+</script>
 </head>
 <script type="text/javascript">
 
@@ -118,18 +132,30 @@ Choose an image: <input type="file" name="image" id="image" accept=".jpg,.png" o
 	$query="select `username`,`post_time`,`post_content`,`post_picture` from `post` order by `post_time` desc";
 	$result=mysqli_query($con,$query);
 	$result->data_seek(0);
-	while($row=$result->fetch_assoc()){
-	$time=preg_split("/_/",$row["post_time"]);
-		echo "<span class=\"info_block\" style=\"display:inline-block;width:100%;min-height:100px;vertical-align:left;text-align:left\">";
-
-		echo "<span style=\"position:absoulte;top:0px;padding-left:10px;vertical-align:left;font-size:10px;\">".@$time[0]."-".@$time[1]."-".@$time[2]."/".@$time[3].":".@$time[4].":".@$time[5]." by ".@$row["username"]."<br/></span><span style=\"display:block;margin-top:20px;margin-left:50px;margin-bottom:20px;text-align:left;\">";
+	while($row=$result->fetch_assoc())
+	{
+		$time=preg_split("/_/",$row["post_time"]);
+?>
+		<span class="info_block" style="display:inline-block;width:100%;min-height:100px;vertical-align:left;text-align:left">
+			<span style="position:absoulte;top:0px;padding-left:10px;vertical-align:left;font-size:10px;">
+<?php
+			echo "".@$time[0]."-".@$time[1]."-".@$time[2]."/".@$time[3].":".@$time[4].":".@$time[5]." by ";
+			echo "<a href=\"profile.php?user=".$row["username"]."\">".@$row["username"]."</a><br/>";
+?>
+			</span>
+			<span style="display:block;margin-top:20px;margin-left:50px;margin-bottom:20px;text-align:left;">
+<?php
 		
 			echo $row["post_content"]."<br/><br/>";
 			if($row["post_picture"] != "no pic")
 			{
 				echo "<img src = ".$row["post_picture"]." style=\"max-width:100%\"/> <br/>";
 			}
-		echo "</span></span><span style=\"display:inline-block;width:100%;height:30px;vertical-align:left;\"></span>";
+?>
+			</span>
+		</span>
+		<span style="display:inline-block;width:100%;height:30px;vertical-align:left;"></span>
+<?php
 	}
 	$result->free();
 	$con->close();
@@ -175,8 +201,10 @@ Choose an image: <input type="file" name="image" id="image" accept=".jpg,.png" o
 
 <img src="images/logo.png" style="display:inline-block;max-height:30px;"/>
 <span style="float:right;margin-right:10px;padding-top:8px;"><img src="images/logout.png" style="max-height:20px;max-width:20px;"/><span style="float:right;margin-right:25px;padding-left:8px;position:relative;bottom:1px;"><a class="logout_button" href="logout.php">Logout</a></span></span>
-<input type="text" class="input_bar" style="float:right;margin-right:20px;width:20%;" placeholder="Search"/>
 
+<form style="float:right;margin-right:20px;width:20%;" action="search.php" method="GET" onsubmit="return submitCheck(content)">
+<input type="text" class="input_bar" name="content" style="width:100%;" placeholder="Press Enter to Search"/>
+</form>
 
 </div>
 

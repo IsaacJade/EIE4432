@@ -4,32 +4,59 @@
 	{
 		header("location:login.html");
 	}
-	$con=mysqli_connect("localhost","root","","users"); 
-		if (!$con) { 
-		  die('database connect error');
+	if((!isset($_GET["user"]))||($_GET["user"]==$_SESSION["username"]))
+	{
+		$current_display_username=$_SESSION["username"];
+		$current_display_profile=$_SESSION["profile"];
+		$current_display_city=$_SESSION["city"];
+		$current_display_email=$_SESSION["email"];
+		$display_function=true;
+	}
+	else
+	{
+		$current_display_username=$_GET["user"];
+		$display_function=false;
+		$con=mysqli_connect("localhost","root","","users"); 
+		if (!$con)
+		{
+			die('database connect error');
 		}
-		$query_num="select * ,count(*) as `num` from `post` where `username` = \"".$_SESSION["username"]."\" order by `post_time` desc";
+		$query_num="select profile,city,email from `users` where `username` = \"".$_GET["user"]."\"";
 		$result_num=mysqli_query($con,$query_num);
 		$result_num->data_seek(0);
 		$row_num=$result_num->fetch_assoc();
-		$post_num = $row_num["num"];
+		$current_display_profile=$row_num["profile"];
+		$current_display_city=$row_num["city"];
+		$current_display_email=$row_num["email"];
 		$result_num->free();
-		
-		$query_num = "select *, count(*) as `num` from `relation` where `userone` = \"".$_SESSION["username"]."\"";
-		$result_num=mysqli_query($con,$query_num);
-		$result_num->data_seek(0);
-		$row_num=$result_num->fetch_assoc();
-		$following_num = $row_num["num"];
-		$result_num->free();
-		
-		$query_num = "select *, count(*) as `num` from `relation` where `usertwo` = \"".$_SESSION["username"]."\"";
-		$result_num=mysqli_query($con,$query_num);
-		$result_num->data_seek(0);
-		$row_num=$result_num->fetch_assoc();
-		$follower_num = $row_num["num"];
-		$result_num->free();
-		
-		$query_post="select `username`,`post_time`,`post_content`,`post_picture` from `post` where `username` = \"".$_SESSION["username"]."\" order by `post_time` desc";
+	}
+	$con=mysqli_connect("localhost","root","","users"); 
+	if (!$con)
+	{
+		die('database connect error');
+	}
+	$query_num="select * ,count(*) as `num` from `post` where `username` = \"".$current_display_username."\" order by `post_time` desc";
+	$result_num=mysqli_query($con,$query_num);
+	$result_num->data_seek(0);
+	$row_num=$result_num->fetch_assoc();
+	$post_num = $row_num["num"];
+	$result_num->free();
+	
+	$query_num = "select *, count(*) as `num` from `relation` where `userone` = \"".$current_display_username."\"";
+	$result_num=mysqli_query($con,$query_num);
+	$result_num->data_seek(0);
+	$row_num=$result_num->fetch_assoc();
+	$following_num = $row_num["num"];
+	$result_num->free();
+	
+	$query_num = "select *, count(*) as `num` from `relation` where `usertwo` = \"".$current_display_username."\"";
+	$result_num=mysqli_query($con,$query_num);
+	$result_num->data_seek(0);
+	$row_num=$result_num->fetch_assoc();
+	$follower_num = $row_num["num"];
+	$result_num->free();
+	
+	$query_post="select `username`,`post_time`,`post_content`,`post_picture` from `post` where `username` = \"".$current_display_username."\" order by `post_time` desc";
 ?>
 <html>
 <head>
@@ -47,9 +74,21 @@ function imagePreview()
 		previewObj.src = window.URL.createObjectURL(imgObj.files[0]);
 	}
 	return true;
- }
+}
+function submitCheck(f)
+{
+	if(f.value=="")
+	{
+		alert("Cannot search without keyword");
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
 </script>
-<title><?php echo "Profile of ".$_SESSION["username"];?></title>
+<title><?php echo "Profile of ".$current_display_username;?></title>
 <link rel="stylesheet" type="text/css" href="theme.css"/>
 <link rel="shortcut icon" type="image/x-icon" href="images/favorite.png"/>
 </head>
@@ -58,37 +97,31 @@ function imagePreview()
 
 <div style="position:absolute;top:270px;left:0px;width:100%;min-width:1200px;height:60px;background-color:white;box-shadow:0px 0px 4px grey;">
 <span style="position:absolute;left:20%;top:15px;">
-<a href="profile.php?q=post" class="main_button">Post
+<a href="profile.php?<?php echo "user=".$current_display_username."&";?>q=post" class="main_button">Post
 <span style="padding-left:8px;font-size:16px;">
-
 <?php echo $post_num;?>
-
 </span>
 </a>
 <span class="division_line"></span>
-<a href="profile.php?q=following" class="main_button">Following
+<a href="profile.php?<?php echo "user=".$current_display_username."&";?>q=following" class="main_button">Following
 <span style="padding-left:8px;font-size:16px;">
-
 <?php echo $following_num;?>
-
 </span>
 </a>
 <span class="division_line"></span>
-<a href="profile.php?q=follower" class="main_button">Follower
+<a href="profile.php?<?php echo "user=".$current_display_username."&";?>q=follower" class="main_button">Follower
 <span style="padding-left:8px;font-size:16px;">
-
 <?php echo $follower_num;?>
-
 </span>
 </a>
-<span class="division_line"></span>
-<a href="profile.php?q=like" class="main_button">Like<span style="padding-left:8px;font-size:16px;">104</span></a>
 </span>
+<?php if(!$display_function){?>
 <input type="button" value="Follow" style="position:absolute;top:12px;right:5%;" class="node_button"/>
+<?php }?>
 </div>
 
 <div style="position:absolute;top:200px;left:8%;width:160px;height:160px;border-radius:50%;background-color:white;box-shadow:0px 0px 4px grey;padding:0px;">
-<div style="position:relative;top:5px;"><img class="headerimg" src="./<?php echo $_SESSION["profile"];?>"/></div>
+<div style="position:relative;top:5px;"><img class="headerimg" src="./<?php echo $current_display_profile;?>"/></div>
 </div>
 
 <div style="position:absolute;left:10%;margin-top:400px;width:80%;min-width:1000px;text-align:center">
@@ -96,11 +129,30 @@ function imagePreview()
 <div style="display:inline-block;width:20%;vertical-align:top;">
 <div class="info_block" style="display:inline-block;width:100%;padding:15px;">
 <table style="padding-left:10px;" cellspacing="10px">
-<tr><td style="vertical-align:top;padding-top:5px;"><img src="images/name.png" style="max-height:12px;max-width:12px;"></td><td style="padding-left:8px;"><?php echo $_SESSION["username"];?></td></tr>
-<tr><td style="vertical-align:top;padding-top:5px;"><img src="images/location.png" style="height:12px;width:12px;"></td><td style="padding-left:8px;"><?php echo $_SESSION["city"];?></td></tr>
-<tr><td style="vertical-align:top;padding-top:5px;"><img src="images/description.png" style="height:12px;width:12px;"></td><td style="padding-left:8px;"><?php echo $_SESSION["email"];?></td></tr>
-<tr><td style="vertical-align:top;padding-top:5px;"><img src="images/pen.png" style="height:12px;width:12px;"></td><td style="padding-left:8px;"><a href="profile.php?q=edit">Edit my information</a></td></tr>
-<tr><td style="vertical-align:top;padding-top:5px;"><img src="images/pen.png" style="height:12px;width:12px;"></td><td style="padding-left:8px;"><a href="profile.php?q=delete">Delete my account</a></td></tr>
+<tr>
+<td style="vertical-align:top;padding-top:5px;"><img src="images/name.png" style="max-height:12px;max-width:12px;"></td>
+<td style="padding-left:8px;"><?php echo $current_display_username;?></td>
+</tr>
+<tr>
+<td style="vertical-align:top;padding-top:5px;"><img src="images/location.png" style="height:12px;width:12px;"></td>
+<td style="padding-left:8px;"><?php echo $current_display_city;?></td>
+</tr>
+<tr>
+<td style="vertical-align:top;padding-top:5px;"><img src="images/description.png" style="height:12px;width:12px;"></td>
+<td style="padding-left:8px;"><?php echo $current_display_email;?></td>
+</tr>
+
+<?php if($display_function){?>
+<tr>
+<td style="vertical-align:top;padding-top:5px;"><img src="images/pen.png" style="height:12px;width:12px;"></td>
+<td style="padding-left:8px;"><a href="profile.php?q=edit">Edit my information</a></td>
+</tr>
+<tr>
+<td style="vertical-align:top;padding-top:5px;"><img src="images/pen.png" style="height:12px;width:12px;"></td>
+<td style="padding-left:8px;"><a href="profile.php?q=delete">Delete my account</a></td>
+</tr>
+<?php }?>
+
 </table>
 </div>
 <span style="display:inline-block;height:20px;width:100%;min-width:300px;vertical-align:top;">
@@ -126,7 +178,7 @@ function imagePreview()
 		while($row=$result->fetch_assoc())
 		{
 			$time=preg_split("/_/",$row["post_time"]);
-			echo $time[0]."-".$time[1]."-".$time[2]."/".$time[3].":".$time[4].":".$time[5]." by ".$row["username"]."<br/>";
+			echo "<h6>".$time[0]."-".$time[1]."-".$time[2]."/".$time[3].":".$time[4].":".$time[5]." by ".$row["username"]."<br/></h6>";
 			echo $row["post_content"]."<br/><br/>";
 			if($row["post_picture"] != "no pic")
 			{
@@ -137,11 +189,11 @@ function imagePreview()
 	}
 	else if($_GET["q"]=="following")
 	{
-		echo "This is following board";
+		echo "This is following board of ".$current_display_username;
 	}
 	else if($_GET["q"]=="follower")
 	{
-		echo "This is follower board";
+		echo "This is follower board of ".$current_display_username;
 	}
 	else if($_GET["q"]=="like")
 	{
@@ -220,7 +272,10 @@ function imagePreview()
 	}
 	else if($_GET["q"]=="delete")
 	{
-		echo "This is delete board";
+?>
+		<p>Are you sure to delete your account?</p>
+		<p><input type="button" value="Yes" onclick="location.href='delete_user.php'"/><input type="button" value="No" onclick="location.href='profile.php'"/></p>
+<?php
 	}
 	else if($_GET["q"]=="change")
 	{
@@ -294,7 +349,11 @@ function imagePreview()
 
 <img src="images/logo.png" style="display:inline-block;max-height:30px;"/>
 <span style="float:right;margin-right:10px;padding-top:8px;"><img src="images/logout.png" style="max-height:20px;max-width:20px;"/><span style="float:right;margin-right:25px;padding-left:8px;position:relative;bottom:1px;"><a class="logout_button" href="logout.php">Logout</a></span></span>
-<input type="text" class="input_bar" style="float:right;margin-right:45px;width:20%;" placeholder="Search"/>
+
+<form style="float:right;margin-right:20px;width:20%;" action="search.php" method="GET" onsubmit="return submitCheck(content)">
+<input type="text" class="input_bar" name="content" style="width:100%;" placeholder="Press Enter to Search"/>
+</form>
+
 </div>
 
 </body>

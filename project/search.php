@@ -3,14 +3,21 @@
 <title>Search Result</title>
 <link rel="stylesheet" type="text/css" href="theme.css"/>
 <link rel="shortcut icon" type="image/x-icon" href="images/favorite.png"/>
-</head>
 <script type="text/javascript">
-function submitForm()
+function submitCheck(f)
 {
-	document.getElementById("sf").submit();
-	document.getElementById("cf").submit();
+	if(f.value=="")
+	{
+		alert("Cannot search without keyword");
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }
 </script>
+</head>
 <body>
 <div style="margin-top:120px;position:absolute;width:80%">
 
@@ -18,20 +25,20 @@ function submitForm()
 
 <span class="info_block" style="display:inline-block;width:100%;min-height:100px;vertical-align:left;background-color:grey;">
 <span style="display:block;margin-top:30px;margin-left:50px;margin-bottom:20px;text-align:left;">
-<form id="sf" action="search.php" method="POST">
-<input type="text" class="input_bar" name="content" style="width:70%;" placeholder="Search"/><input type="button" value="Submit" class="node_button" style="display:inline-block;margin-left:20px;" onclick="submitForm()"/>
-</form>
-<form id="cf" style="color:white;font-size:15px;" action="search.php" method="GET">
+<form id="sf" action="search.php" method="GET">
+<input type="text" class="input_bar" name="content" style="width:70%;" placeholder="Press Enter to Search"/><input type="submit" value="Submit" class="node_button" style="display:inline-block;margin-left:20px;" onclick="return submitCheck(content)"/>
+<p style="color:white;font-size:15px;">
 <input type="radio" name="class" value="total" checked="checked"/>Total
 <input type="radio" name="class" value="users"/>Users
 <input type="radio" name="class" value="post"/>Post
 <input type="radio" name="class" value="relation"/>Relation
+</p>
 </form>
 </span>
 </span>
 
 <?php
-if(!isset($_POST["content"]))
+if(!isset($_GET["content"]))
 {?>
 	<span style="display:inline-block;height:30px;vertical-align:left;"></span>
 	<span class="info_block" style="display:inline-block;width:100%;min-height:100px;vertical-align:left;">
@@ -45,7 +52,7 @@ else
 {
 	session_start();
 	date_default_timezone_set("Asia/Hong_Kong");
-	$xx=$_POST["content"];
+	$xx=$_GET["content"];
 	$xx=trim($xx);
 	$_SESSION["search"]=explode(" ",$xx);
 	$con=mysqli_connect("localhost","root","");
@@ -108,7 +115,7 @@ else
 	for ($x=0;$x<$rowcount2;$x++)
 	{
 		$row2=mysqli_fetch_assoc($result2);$present=substr($row2["post_time"],0,-9);$present=date('Y-m-d', strtotime(str_replace('_', '/', $present)));$hour=substr($row2["post_time"],11,-6);
-		//if (($_POST["content"]=="no" or $_POST["content"]=="pic" or $_POST["content"]=="no pic") and ($row2["post_picture"]==="no pic") and (strpos(" ".$row2["post_content"], 'no') == false) and (strpos(" ".$row2["post_content"], 'pic')== false)){continue;}
+		//if (($_GET["content"]=="no" or $_GET["content"]=="pic" or $_GET["content"]=="no pic") and ($row2["post_picture"]==="no pic") and (strpos(" ".$row2["post_content"], 'no') == false) and (strpos(" ".$row2["post_content"], 'pic')== false)){continue;}
 ?>
 	<span style="display:inline-block;height:30px;vertical-align:left;"></span>
 	<span class="info_block" style="display:inline-block;width:100%;min-height:100px;vertical-align:left;">
@@ -199,18 +206,18 @@ if(($cl=="t")||($cl=="r"))
 <p>
 <?php
 	echo "<h4>Your keyword is: ";
-	if(!isset($_POST["content"]))
+	if(!isset($_GET["content"]))
 	{
 		echo "[NONE]";
 	}
 	else
 	{
-		echo $_POST["content"];
+		echo $_GET["content"];
 	}
 	echo "<br /></h4>";
 	
 	echo "<h4>Searching category is: ";
-	if(!isset($_POST["content"]))
+	if(!isset($_GET["content"]))
 	{
 		echo "[NONE]";
 	}
@@ -236,7 +243,7 @@ if(($cl=="t")||($cl=="r"))
 	echo "<br /></h4>";
 	
 	echo "About ";
-	if(!isset($_POST["content"]))
+	if(!isset($_GET["content"]))
 	{
 		echo "0";
 	}
@@ -261,11 +268,11 @@ if(($cl=="t")||($cl=="r"))
 <!--Put the top bar at the end makes it on top of any other one-->
 <div class="top_bar" style="text-align:center">
 <span style="float:left">
-<a href="index.html" class="main_button">Home</a>
+<a href="index.php" class="main_button">Home</a>
 <span class="division_line"></span>
 <a href="" class="main_button">Chat</a>
 <span class="division_line"></span>
-<a href="profile.html" class="main_button">Profile</a>
+<a href="profile.php" class="main_button">Profile</a>
 </span>
 
 <img src="images/logo.png" style="display:inline-block;max-height:30px;"/>
