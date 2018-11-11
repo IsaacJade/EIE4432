@@ -23,26 +23,20 @@ function submitCheck(f)
 		return true;
 	}
 }
-</script>
-</head>
-<script type="text/javascript">
-
-
 function imagePreview() 
 {
-        var imgObj=document.getElementById("image"); 
-        var previewObj=document.getElementById("preview");
-        if(imgObj.files && imgObj.files[0])
-		{
-            previewObj.style.display = 'block';
-            previewObj.style.height = '300px';
-            previewObj.style.width = 'auto';
-			previewObj.style.align = 'center';		
-      		previewObj.src = window.URL.createObjectURL(imgObj.files[0]);
-        }
-         return true;
- }
-
+	var imgObj=document.getElementById("image"); 
+	var previewObj=document.getElementById("preview");
+	if(imgObj.files && imgObj.files[0])
+	{
+		previewObj.style.display = 'block';
+		previewObj.style.height = '300px';
+		previewObj.style.width = 'auto';
+		previewObj.style.align = 'center';		
+		previewObj.src = window.URL.createObjectURL(imgObj.files[0]);
+	}
+	return true;
+}
 function autoTAH(ta)
 {
 	clear_info();
@@ -51,7 +45,6 @@ function autoTAH(ta)
 		ta.style.height=ta.scrollTop+ta.scrollHeight+"px";
 	}
 }
-
 function create_new_post()
 {
 	//document.getElementById("input_info").innerHTML=document.getElementById("image").name;
@@ -109,6 +102,7 @@ function clear_info()
 	document.getElementById("input_info").innerHTML="";
 }
 </script>
+</head>
 <body>
 <div style="margin-top:120px;position:absolute;width:80%">
 
@@ -120,9 +114,12 @@ Choose an image: <input type="file" name="image" id="image" accept=".jpg,.png" o
 </form>
 <div style="align:center; "><img id="preview" width=-1 height=-1 style="diplay:none "/></div>
 
-<span style="display:inline-block;width:100%;height:30px;vertical-align:left;text-align:right;margin-top:15px;"><span id="input_info" style="color:#888888;text-decoration:none;margin-right:30px"></span><input type="button" value="Submit" class="node_button" onclick="create_new_post()"/></span>
+<span class="info_break" style="text-align:right;margin-top:15px;">
+<span id="input_info" style="color:#888888;text-decoration:none;margin-right:30px"></span>
+<input type="button" value="Submit" class="node_button" onclick="create_new_post()"/>
+</span>
 
-<span style="display:inline-block;height:30px;vertical-align:left;"></span>
+<span class="info_break"></span>
 <?php
 
 	$con=mysqli_connect("localhost","root","","users"); 
@@ -136,7 +133,7 @@ Choose an image: <input type="file" name="image" id="image" accept=".jpg,.png" o
 	{
 		$time=preg_split("/_/",$row["post_time"]);
 ?>
-		<span class="info_block" style="display:inline-block;width:100%;min-height:100px;vertical-align:left;text-align:left">
+		<span class="info_block" style="min-height:100px;vertical-align:left;text-align:left">
 			<span style="position:absoulte;top:0px;padding-left:10px;vertical-align:left;font-size:10px;">
 <?php
 			echo "".@$time[0]."-".@$time[1]."-".@$time[2]."/".@$time[3].":".@$time[4].":".@$time[5]." by ";
@@ -154,7 +151,7 @@ Choose an image: <input type="file" name="image" id="image" accept=".jpg,.png" o
 ?>
 			</span>
 		</span>
-		<span style="display:inline-block;width:100%;height:30px;vertical-align:left;"></span>
+		<span class="info_break"></span>
 <?php
 	}
 	$result->free();
@@ -168,7 +165,7 @@ Choose an image: <input type="file" name="image" id="image" accept=".jpg,.png" o
 <div style="display:inline-block;width:80px;vertical-align:top;"></div>
 
 <div style="display:inline-block;position:fixed;width:20%;min-width:300px;vertical-align:top;">
-<span class="info_block" style="display:inline-block;width:100%;min-width:300px;vertical-align:top;">
+<span class="info_block" style="min-width:300px;vertical-align:top;">
 <form style="margin:30px;">
 <p>
 <img class="headerimg" src="./<?php echo $_SESSION["profile"];?>"/>
@@ -180,8 +177,7 @@ Choose an image: <input type="file" name="image" id="image" accept=".jpg,.png" o
 </table>
 </form>
 </span>
-<span style="display:inline-block;height:20px;width:100%;min-width:300px;vertical-align:top;">
-</span>
+<span class="info_break"></span>
 <span style="display:inline-block;height:50px;width:100%;min-width:300px;vertical-align:top;">
 <a style="font-size:12px;color:grey;">Copyright Out#Rage 2018</a>
 </span>
