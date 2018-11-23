@@ -76,10 +76,33 @@ City<br/>
  <p> Gender:  
 	  <input type="radio" id="gender" name="gender" value="1" /> Male 
 	  <input type="radio" id="gender" name="gender" value="2" /> Female
+	  <br/>
 	  <input type="radio" id="gender" name="gender" value="3" /> Both
 	  <input type="radio" id="gender" name="gender" value="4" checked /> Undecided
 </p>
+<p style="text-align:center;">
+<div>Avatar</div>
+<table style="display:inline-block">
 
+<tr>
+<td><img class="headerimg" style="height:50px;width:50px;" src="profiles/index1.jpg"><input style="position:relative;bottom:18px;" type="radio" name="profile" value="1" checked="checked" /></td>
+<td><img class="headerimg" style="height:50px;width:50px;" src="profiles/index2.jpg"><input style="position:relative;bottom:18px;" type="radio" name="profile" value="2" /></td>
+</tr>
+
+<tr>
+<td><img class="headerimg" style="height:50px;width:50px;" src="profiles/index3.jpg"><input style="position:relative;bottom:18px;" type="radio" name="profile" value="3" /></td>
+<td><img class="headerimg" style="height:50px;width:50px;" src="profiles/index4.jpg"><input style="position:relative;bottom:18px;" type="radio" name="profile" value="4" /></td>
+</tr>
+
+<tr>
+<td><img class="headerimg" style="height:50px;width:50px;" src="profiles/index5.jpg"><input style="position:relative;bottom:18px;" type="radio" name="profile" value="5" /></td>
+<td><img class="headerimg" style="height:50px;width:50px;" src="profiles/index6.jpg"><input style="position:relative;bottom:18px;" type="radio" name="profile" value="6" /></td>
+</tr>
+
+</table>
+
+	  
+</p>
 
     <div>
         <label for="start">Birthday</label>

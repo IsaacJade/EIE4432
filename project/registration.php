@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>无标题文档</title>
+<title>Registering</title>
 </head>
 
 <body>
@@ -17,12 +17,14 @@
 	@$city=$_POST['city'];
 	$_SESSION["gender"]=$_POST['gender'];
 	$_SESSION["birthday"]=$_POST['birthday'];
+	$_SESSION["profile"]="profiles/index".$_POST["profile"].".jpg";
     @$con=mysqli_connect("localhost","root",""); 
 	$username=$_SESSION["username"];
 	$password=$_SESSION["password"];
 	$email=$_SESSION["email"];
 	$gender=$_SESSION["gender"];
 	$birthday=$_SESSION["birthday"];
+	$profile=$_SESSION["profile"];
 	
     if (!$con) { 
       die ('Database connection failed'.$mysql_error()); 
@@ -69,11 +71,12 @@
   <?php 
     } 
 	
-    $con->query("insert into `users` (username,`password`,email,city,birthday,gender) values('".$_SESSION["username"]."','".$_SESSION["password"]."','{$email}','{$city}','{$birthday}','{$gender}')") or die("存入数据库失败" .mysqli_error($con)) ; 
+    $con->query("insert into `users` (username,`password`,email,city,profile,birthday,gender) values('".$_SESSION["username"]."','".$_SESSION["password"]."','{$email}','{$city}','{$profile}','{$birthday}','{$gender}')") or die("Fail to write into database" .mysqli_error($con)) ; 
     $con->close();
   ?> 
   <script type="text/javascript"> 
     alert("Registration Success"); 
+	<?php session_destroy();?>
     window.location.href="login.html"; 
   </script> 
 	
