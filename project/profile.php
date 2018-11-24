@@ -42,18 +42,23 @@
 	$post_num = $row_num["num"];
 	$result_num->free();
 	
-	$query_num = "select *, count(*) as `num` from `relation` where `userone` = \"".$current_display_username."\"";
-	$result_num=mysqli_query($con,$query_num);
-	$result_num->data_seek(0);
-	$row_num=$result_num->fetch_assoc();
-	$following_num = $row_num["num"];
+	$query_num = "select * from `relation` where `userone` = \"".$current_display_username."\"";
+	$result_num=mysqli_query($con,$query_num);$num_row1=mysqli_num_rows($result_num);
+	for ($i=0;$i<$num_row1;$i++){
+		$row_num=mysqli_fetch_assoc($result_num);
+		$following[$i]=$row_num["usertwo"];
+	}
+	$following_num = $i;
 	$result_num->free();
 	
-	$query_num = "select *, count(*) as `num` from `relation` where `usertwo` = \"".$current_display_username."\"";
-	$result_num=mysqli_query($con,$query_num);
-	$result_num->data_seek(0);
-	$row_num=$result_num->fetch_assoc();
-	$follower_num = $row_num["num"];
+	
+	$query_num = "select * from `relation` where `usertwo` = \"".$current_display_username."\"";
+	$result_num=mysqli_query($con,$query_num);$num_row2=mysqli_num_rows($result_num);
+	for ($i=0;$i<$num_row2;$i++){
+		$row_num=mysqli_fetch_assoc($result_num);
+		$follower[$i]=$row_num["userone"];
+	}
+	$follower_num = $i;
 	$result_num->free();
 	
 	$query_post="select `username`,`post_time`,`post_content`,`post_picture` from `post` where `username` = \"".$current_display_username."\" order by `post_time` desc";
@@ -187,13 +192,21 @@ function submitCheck(f)
 		}
 		$result->free();
 	}
+//可以查看自己追踪的用户
 	else if($_GET["q"]=="following")
 	{
-		echo "This is following board of ".$current_display_username;
+		echo "<h3>You have followed these users: </h3>";
+		for ($i=0;$i<$num_row1;$i++){
+			echo "<h4><a href=\"profile.php?user=".$following[$i]."\">".@$following[$i]."</a><br/></h4>";
+		}
 	}
+//可以查看哪些用户追踪了自己
 	else if($_GET["q"]=="follower")
 	{
-		echo "This is follower board of ".$current_display_username;
+		echo "<h3>You have these followers: </h3>";
+		for ($i=0;$i<$num_row2;$i++){
+			echo "<h4><a href=\"profile.php?user=".$follower[$i]."\">".@$following[$i]."</a><br/></h4>";
+		}
 	}
 	else if($_GET["q"]=="like")
 	{
@@ -342,7 +355,7 @@ function submitCheck(f)
 <span style="float:left">
 <a href="index.php" class="main_button">Home</a>
 <span class="division_line"></span>
-<a href="light.php" class="main_button">Light</a>
+<a href="" class="main_button">Chat</a>
 <span class="division_line"></span>
 <a href="profile.php" class="main_button">Profile</a>
 </span>
