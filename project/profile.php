@@ -342,7 +342,7 @@ function submitCheck(f)
 <span style="float:left">
 <a href="index.php" class="main_button">Home</a>
 <span class="division_line"></span>
-<a href="" class="main_button">Chat</a>
+<a href="light.php" class="main_button">Light</a>
 <span class="division_line"></span>
 <a href="profile.php" class="main_button">Profile</a>
 </span>
