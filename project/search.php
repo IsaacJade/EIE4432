@@ -16,6 +16,7 @@ function submitCheck(f)
 		return true;
 	}
 }
+
 </script>
 </head>
 <body>
@@ -32,6 +33,7 @@ function submitCheck(f)
 <input type="radio" name="class" value="users"/>Users
 <input type="radio" name="class" value="post"/>Post
 <input type="radio" name="class" value="relation"/>Relation
+<input type="radio" name="class" value="quote"/>Quote
 </p>
 </form>
 </span>
@@ -59,16 +61,32 @@ else
 	if(!$con) {die("error with opiening the page: ".mysqli_error());
 	}
 	mysqli_select_db($con,"users");
-	$sql1="select * from users where username like '%".$_SESSION["search"][0]."%' or city like '%".$_SESSION["search"][0]."%' or profile like '%".$_SESSION["search"][0]."%' 
-	or birthday like '%".$_SESSION["search"][0]."%' or gender like '%".$_SESSION["search"][0]."%' or email like '%".$_SESSION["search"][0]."%'";
-	$sql2="select * from post where username like '%".$_SESSION["search"][0]."%' or post_time like '%".$_SESSION["search"][0]."%' or post_content like '%".$_SESSION["search"][0]."%'
-			or emotion like '%".$_SESSION["search"][0]."%' or comment_content like '%".$_SESSION["search"][0]."%' 
-			or comment_picture like '%".$_SESSION["search"][0]."%' or comment_user like '%".$_SESSION["search"][0]."%' or comment_time like '%".$_SESSION["search"][0]."%'";
-	$sql3="select * from  relation where userone like '%".$_SESSION["search"][0]."%' or usertwo like '%".$_SESSION["search"][0]."%' or relation like '%".$_SESSION["search"][0]."%'";
 	
+	if (count(explode(' ',$xx))==1){
+	$_SESSION["keyword"]=1;$a=$_SESSION["search"][0];
+	$sql1="select * from users where username like '%".$a."%' or city like '%".$a."%' or profile like '%".$a."%' or birthday like '%".$a."%' or gender like '%".$a."%' or email like '%".$a."%'";
+	$sql2="select * from post where username like '%".$a."%' or post_time like '%".$a."%' or post_content like '%".$a."%' ";
+	$sql3="select * from  relation where userone like '%".$a."%' or usertwo like '%".$a."%' or relation like '%".$a."%' ";
+	$sql4="select * from quote where quote_type like '%".$a."%' or quote_content like '%".$a."%' or quote_picture like '%".$a."%'";
+	
+	}
+
+else if (count(explode(' ',$xx))==2){
+	$_SESSION["keyword"]=2;$a=$_SESSION["search"][0];$b=$_SESSION["search"][1];
+	$sql1="select * from users where username like '%".$a."%' or city like '%".$a."%' or profile like '%".$a."% ' or birthday like '%".$a."%' or gender like '%".$a."%' or email like '%".$a."%' 
+	or username like '%".$b."%' or city like '%".$b."%' or profile like '%".$b."% ' or birthday like '%".$b."%' or gender like '%".$b."%' or email like '%".$b."%'";
+	$sql2="select * from post where username like '%".$a."%' or post_time like '%".$a."%' or post_content like '%".$a."%' 
+	or username like '%".$b."%' or post_time like '%".$b."%' or post_content like '%".$b."%' ";
+	$sql3="select * from  relation where userone like '%".$a."%' or usertwo like '%".$a."%' or relation like '%".$a."%' 
+	or userone like '%".$b."%' or usertwo like '%".$b."%' or relation like '%".$b."%'";
+	$sql4="select * from quote where quote_type like '%".$a."%' or quote_content like '%".$a."%' or quote_picture like '%".$a."%'
+	or quote_type like '%".$b."%' or quote_content like '%".$b."%' or quote_picture like '%".$b."%'";
+}
 	$result1=mysqli_query($con,$sql1); $rowcount1=mysqli_num_rows($result1);
 	$result2=mysqli_query($con,$sql2);$rowcount2=mysqli_num_rows($result2);
-	$result3=mysqli_query($con,$sql3);$rowcount3=mysqli_num_rows($result3);$totalrows=$rowcount1+$rowcount2+$rowcount3;
+	$result3=mysqli_query($con,$sql3);$rowcount3=mysqli_num_rows($result3);
+	$result4=mysqli_query($con,$sql4);$rowcount4=mysqli_num_rows($result4);
+	$totalrows=$rowcount1+$rowcount2+$rowcount3+$rowcount4;
 	
 	if((!isset($_GET["class"]))||($_GET["class"]=="total"))
 	{
@@ -86,6 +104,10 @@ else
 	{
 		$cl="r";
 	}
+	else if($_GET["class"]=="quote")
+	{
+		$cl="q";
+	}
 	else
 	{
 		$cl="t";
@@ -101,46 +123,100 @@ else
 	<p>
 <?php
 		$row1=mysqli_fetch_assoc($result1);
-		echo '<h4><a href="\\"https://www.w3schools.com\\">'.$row1["username"]."'s Profile | Home page</a><br /></h4>".$row1["profile"] ;
+		echo "<h4><a href=\"profile.php?user=".$row1["username"]."\">".@$row1["username"]."'s Profile | Home page</a><br /></h4>".$row1["profile"] ;
 		echo "City: ".$row1["city"]."  Age: ".$row1["age"]."  Email: ".$row1["email"]."<br />";
 ?>
 	</p>
 	</span>
 	</span>
+	<script>
+	
+//use ajax to communicate with like_num.php
+function changeImage(a) {
+   var url="like_num.php";
+		var para1="value=1&number="+a;
+		var para2="value=0&number="+a;
+		
+		xmlHttp=null;
+		if (window.XMLHttpRequest) {
+		xmlHttp = new XMLHttpRequest();
+		} else if (window.ActiveXObject) {
+		xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		if (xmlHttp != null) {
+			var image = document.getElementById(a);
+			if (image.src.match("grey")) {
+			image.src = "like_color1.jpg";document.getElementById("+1"+a).innerHTML += "+1";
+			xmlHttp.onreadystatechange = stateChange;
+			xmlHttp.open("GET", "like_num.php?"+para1, true);
+			xmlHttp.send(null);
+			} 
+			else{
+			image.src = "like_grey.jpg";document.getElementById("+1"+a).innerHTML = "";
+			xmlHttp.onreadystatechange = stateChange;
+			xmlHttp.open("GET", "like_num.php?"+para2, true);
+			xmlHttp.send(null);
+			}
+		}
+	}
+	
+	function stateChange() {
+	if ( (xmlHttp.readyState == 4) &&(xmlHttp.status == 200) ) {
+		//alert(xmlHttp.responseText);
+	}
+	}
+</script>
 <?php
 	}
 	}
+	
 	if(($cl=="t")||($cl=="p"))
 	{
 	for ($x=0;$x<$rowcount2;$x++)
 	{
 		$row2=mysqli_fetch_assoc($result2);$present=substr($row2["post_time"],0,-9);$present=date('Y-m-d', strtotime(str_replace('_', '/', $present)));$hour=substr($row2["post_time"],11,-6);
-		//if (($_GET["content"]=="no" or $_GET["content"]=="pic" or $_GET["content"]=="no pic") and ($row2["post_picture"]==="no pic") and (strpos(" ".$row2["post_content"], 'no') == false) and (strpos(" ".$row2["post_content"], 'pic')== false)){continue;}
 ?>
+
 	<span style="display:inline-block;height:30px;vertical-align:left;"></span>
 	<span class="info_block" style="display:inline-block;width:100%;min-height:100px;vertical-align:left;">
 	<span style="display:block;margin-top:20px;margin-left:50px;margin-bottom:20px;text-align:left;padding-right:50px">
 	<p>
-<?php		echo '<h4><a href=\\"https://www.w3schools.com\\">'.substr($row2["post_content"],0,30)."...&nbsp; | ".$row2["username"]."'s Post</a></h4>";
-			if ($row2["post_picture"]==="no pic"){
+<?php		
+			echo "<h4><a href=\"profile.php?user=".$row2["username"]."\">".$row2["username"]."'s Post</a>"; 
 				if ($present==date("Y-m-d")){ 
 					$ago=intval(date('H'))-intval($hour); 
-					echo $ago." hours ago - " .$row2["post_content"]." | Comments: ".wordwrap($row2["comment_content"],60,"<br>\n")."<br />";
+					echo "</h4> ".$row2["post_content"]."<br> -- <small> Posted ".$ago." hours ago </small><br>";
 				}
-				else{
-					echo $present.", ".wordwrap($row2["post_content"],60,"<br>\n")." | Comments: ".$row2["comment_content"]."<br />";
+				if ($present!=date("Y-m-d")){
+					echo "</h4> ".$row2["post_content"]."<br> --<small> Posted on ".$present."</small><br>";
 				}
+				if ($row2["post_picture"]!="no pic"){
+					echo '<img style=\'max-width:100%\'; src="'.$row2["post_picture"].'"/><br />';
 			}
-			else {
-				echo '<img style=\'max-width:100%\'; src="'.$row2["post_picture"].'"/><br />';
-				if ($present==date("Y-m-d")){ 
-					$ago=intval(date('H'))-intval($hour); echo $ago." hours ago - " .$row2["post_content"]." | Comments: ".wordwrap($row2["post_content"],60,"<br>\n")."<br />";
-				}
-				else{
-					echo $present.", ". wordwrap($row2["post_content"],60,"<br>\n")." | Comments: ".$row2["comment_content"]."<br />";
-					}
+		    $_SESSION[$x."name"]=$row2["username"];$_SESSION[$x."post_id"]=$row2["post_id"];
+			
+			$like_post='select like_post from users where username="'.$_SESSION["username"].'"';
+			$result_post=mysqli_query($con,$like_post);$row_post=mysqli_fetch_array($result_post);
+			if (strpos($row_post["like_post"],$row2["post_id"]) == true) {
+				?>
+				<img id="<?php echo $x ?>" onclick="changeImage(<?php echo $x ?>)" src="like_color1.jpg" width="20" height="18"/>
+				<?php
+				echo " ".$row2["like_num"]." likes";
+				?>
+				<h4 id="<?php echo "+1".$x ?>"></h4>
+				<?php
+			echo "<small>You have liked this post~</small>";
 			}
-?>
+				else if (strpos($row_post["like_post"],$row2["post_id"]) != true) {	
+				?>	       
+				<img id="<?php echo $x ?>" onclick="changeImage(<?php echo $x ?>)" src="like_grey.jpg" width="20" height="18"/>	
+				<?php
+				echo " ".$row2["like_num"]." likes";
+				?>
+				<h4 id="<?php echo "+1".$x ?>"></h4>
+				<?php
+				}
+				?>
 	</p>
 	</span>
 	</span>
@@ -157,9 +233,9 @@ if(($cl=="t")||($cl=="r"))
 	<span style="display:block;margin-top:20px;margin-left:50px;margin-bottom:20px;text-align:left;">
 	<p>
 <?php
-		$row3=mysqli_fetch_assoc($result3);echo '<h4><a href=\\"https://www.w3schools.com\\">'.$row3["usertwo"]."'s Followers | View ".$row3["usertwo"]."'s relations here</a></h4>";
-		//echo '<a href=\\"https://www.w3schools.com\\">View '.$row3["userone"]."'s ".$row3["relation"]."</a><br />";
-		echo $row3["userone"]." is the follower and ".$row3["relation"]." of ".$row3["usertwo"].". ".$row3["userone"]." has followed for 1 day....and..<br />";
+		$row3=mysqli_fetch_assoc($result3);
+		echo "<h4><a href=\"profile.php?user=".$row3["usertwo"]."\">".$row3["usertwo"]."'s Followers </a></h4>";
+		echo $row3["userone"]." and others are the followers of ".$row3["usertwo"].". <br />";
 ?>
 	</p>
 	</span>
@@ -167,7 +243,26 @@ if(($cl=="t")||($cl=="r"))
 <?php
 	}
 }
-	if (($rowcount1==0) and ($rowcount2==0) and ($rowcount3==0))
+if(($cl=="t")||($cl=="q"))
+{
+		for ($y=0;$y<$rowcount4;$y++)
+		{
+?>
+	<span style="display:inline-block;height:30px;vertical-align:left;"></span>
+	<span class="info_block" style="display:inline-block;width:100%;min-height:100px;vertical-align:left;">
+	<span style="display:block;margin-top:20px;margin-left:50px;margin-bottom:20px;text-align:left;">
+	<p>
+<?php
+		$row4=mysqli_fetch_assoc($result4);echo '<h4><a href=\\"https://www.w3schools.com\\">Positive quote: '.$row4["quote_content"]."</a></h4>";
+		echo '<img style=\'max-width:90%\'; src="'.$row4["quote_picture"].'"/><br />';
+?>
+	</p>
+	</span>
+	</span>
+<?php
+	}
+}
+	if (($rowcount1==0) and ($rowcount2==0) and ($rowcount3==0) and ($rowcount4==0))
 	{
 ?>
 	<span style="display:inline-block;height:30px;vertical-align:left;"></span>
@@ -182,10 +277,11 @@ if(($cl=="t")||($cl=="r"))
 	</span>
 <?php
 	}
-  //$link="Query1.html";echo "<a href="$link">click here</a>";
+
 	mysqli_free_result($result1);
 	mysqli_free_result($result2);
-	mysqli_free_result($result3);	// Free result set
+	mysqli_free_result($result3);
+	mysqli_free_result($result4);	// Free result set
 	mysqli_close($con);
 }
 ?>
@@ -238,6 +334,10 @@ if(($cl=="t")||($cl=="r"))
 		else if($cl=="r")
 		{
 			echo "Relation";
+		}
+		else if($cl=="q")
+		{
+			echo "Quote";
 		}
 	}
 	echo "<br /></h4>";
