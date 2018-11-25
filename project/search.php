@@ -1,3 +1,10 @@
+<?php
+	session_start();
+	if(!isset($_SESSION["username"]))
+	{
+		header("location:login.html");
+	}
+?>
 <html>
 <head>
 <title>Search Result</title>
