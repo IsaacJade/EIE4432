@@ -109,7 +109,7 @@ else
 	if (count(explode(' ',$xx))==1){
 	$_SESSION["keyword"]=1;$a=$_SESSION["search"][0];
 	$sql1="select * from users where username like '%".$a."%' or city like '%".$a."%' or profile like '%".$a."%' or birthday like '%".$a."%' or gender like '%".$a."%' or email like '%".$a."%'";
-	$sql2="select * from post where username like '%".$a."%' or post_time like '%".$a."%' or post_content like '%".$a."%' ";
+	$sql2="select * from post where username like '%".$a."%' or post_time like '%".$a."%' or post_content like '%".$a."%' order by `post_time` desc";
 	$sql3="select * from  relation where userone like '%".$a."%' or usertwo like '%".$a."%' or relation like '%".$a."%' ";
 	$sql4="select * from quote where quote_type like '%".$a."%' or quote_content like '%".$a."%' or quote_picture like '%".$a."%'";
 	
@@ -120,7 +120,7 @@ else if (count(explode(' ',$xx))==2){
 	$sql1="select * from users where username like '%".$a."%' or city like '%".$a."%' or profile like '%".$a."% ' or birthday like '%".$a."%' or gender like '%".$a."%' or email like '%".$a."%' 
 	or username like '%".$b."%' or city like '%".$b."%' or profile like '%".$b."% ' or birthday like '%".$b."%' or gender like '%".$b."%' or email like '%".$b."%'";
 	$sql2="select * from post where username like '%".$a."%' or post_time like '%".$a."%' or post_content like '%".$a."%' 
-	or username like '%".$b."%' or post_time like '%".$b."%' or post_content like '%".$b."%' ";
+	or username like '%".$b."%' or post_time like '%".$b."%' or post_content like '%".$b."%' order by `post_time` desc";
 	$sql3="select * from  relation where userone like '%".$a."%' or usertwo like '%".$a."%' or relation like '%".$a."%' 
 	or userone like '%".$b."%' or usertwo like '%".$b."%' or relation like '%".$b."%'";
 	$sql4="select * from quote where quote_type like '%".$a."%' or quote_content like '%".$a."%' or quote_picture like '%".$a."%'
