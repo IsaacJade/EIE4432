@@ -16,7 +16,51 @@ function submitCheck(f)
 		return true;
 	}
 }
-
+function changeImage(a)
+{
+	var para1="value=1&number="+a;//like
+	var para2="value=0&number="+a;//cancel like
+	
+	xmlHttp=null;
+	
+	if(window.XMLHttpRequest)
+	{
+		xmlHttp=new XMLHttpRequest();
+	}
+	else if(window.ActiveXObject)
+	{
+		xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	
+	if (xmlHttp!=null)
+	{
+		var image=document.getElementById(a);
+		xmlHttp.onreadystatechange=stateChangeForLike;
+		if(image.src.match("grey"))
+		{
+			xmlHttp.open("GET","like_num.php?"+para1,true);
+		}
+		else
+		{
+			xmlHttp.open("GET","like_num.php?"+para2,true);
+		}
+		xmlHttp.send(null);
+	}
+}
+function stateChangeForLike(a)
+{
+	if(xmlHttp.readyState==4)
+	{
+		if(xmlHttp.status==200)
+		{
+			location.reload();
+		}
+		else
+		{
+			document.getElementById("+1"+a).innerHTML="Problems in retriving data: "+xmlHttp.statusText;
+		}
+	}
+}
 </script>
 </head>
 <body>
@@ -129,43 +173,6 @@ else if (count(explode(' ',$xx))==2){
 	</p>
 	</span>
 	</span>
-	<script>
-	
-//use ajax to communicate with like_num.php
-function changeImage(a) {
-   var url="like_num.php";
-		var para1="value=1&number="+a;
-		var para2="value=0&number="+a;
-		
-		xmlHttp=null;
-		if (window.XMLHttpRequest) {
-		xmlHttp = new XMLHttpRequest();
-		} else if (window.ActiveXObject) {
-		xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
-		}
-		if (xmlHttp != null) {
-			var image = document.getElementById(a);
-			if (image.src.match("grey")) {
-			image.src = "like_color1.jpg";document.getElementById("+1"+a).innerHTML += "+1";
-			xmlHttp.onreadystatechange = stateChange;
-			xmlHttp.open("GET", "like_num.php?"+para1, true);
-			xmlHttp.send(null);
-			} 
-			else{
-			image.src = "like_grey.jpg";document.getElementById("+1"+a).innerHTML = "";
-			xmlHttp.onreadystatechange = stateChange;
-			xmlHttp.open("GET", "like_num.php?"+para2, true);
-			xmlHttp.send(null);
-			}
-		}
-	}
-	
-	function stateChange() {
-	if ( (xmlHttp.readyState == 4) &&(xmlHttp.status == 200) ) {
-		//alert(xmlHttp.responseText);
-	}
-	}
-</script>
 <?php
 	}
 	}
@@ -193,29 +200,42 @@ function changeImage(a) {
 				if ($row2["post_picture"]!="no pic"){
 					echo '<img style=\'max-width:100%\'; src="'.$row2["post_picture"].'"/><br />';
 			}
-		    $_SESSION[$x."name"]=$row2["username"];$_SESSION[$x."post_id"]=$row2["post_id"];
-			
+		    $_SESSION[$x."name"]=$row2["username"];
+			$_SESSION[$x."post_id"]=$row2["post_id"];
+			$like_post='select like_post from users where username="'.$_SESSION["username"].'"';
+			$result_post=mysqli_query($con,$like_post);
+			$row_post=mysqli_fetch_array($result_post);
+			$row_post=rtrim($row_post["like_post"]);
+			$showl=false;
+			$ulikes=preg_split("/\s/",$row_post);
+			foreach($ulikes as $m=>$n)
+			{
+				if($n==$row2["post_id"])
+				{
+					$showl=true;
+					break;
+				}
+			}
 			$like_post='select like_post from users where username="'.$_SESSION["username"].'"';
 			$result_post=mysqli_query($con,$like_post);$row_post=mysqli_fetch_array($result_post);
-			if (strpos($row_post["like_post"],$row2["post_id"]) == true) {
-				?>
-				<img id="<?php echo $x ?>" onclick="changeImage(<?php echo $x ?>)" src="like_color1.jpg" width="20" height="18"/>
-				<?php
-				echo " ".$row2["like_num"]." likes";
-				?>
-				<h4 id="<?php echo "+1".$x ?>"></h4>
-				<?php
-			echo "<small>You have liked this post~</small>";
+			if($showl==true)
+			{
+?>
+				<img id="<?php echo $x;?>" onclick="changeImage(<?php echo $x;?>)" src="images/like_color.jpg" width="20" height="18"/>
+				<?php echo " ".$row2["like_num"]." likes <small>You have liked this post~</small>";?>
+				<p id="<?php echo "+1".$x;?>"></p>
+<?php
 			}
-				else if (strpos($row_post["like_post"],$row2["post_id"]) != true) {	
+			else
+			{	
 				?>	       
-				<img id="<?php echo $x ?>" onclick="changeImage(<?php echo $x ?>)" src="like_grey.jpg" width="20" height="18"/>	
+				<img id="<?php echo $x ?>" onclick="changeImage(<?php echo $x ?>)" src="images/like_grey.jpg" width="20" height="18"/>	
 				<?php
 				echo " ".$row2["like_num"]." likes";
 				?>
 				<h4 id="<?php echo "+1".$x ?>"></h4>
 				<?php
-				}
+			}
 				?>
 	</p>
 	</span>
@@ -253,7 +273,8 @@ if(($cl=="t")||($cl=="q"))
 	<span style="display:block;margin-top:20px;margin-left:50px;margin-bottom:20px;text-align:left;">
 	<p>
 <?php
-		$row4=mysqli_fetch_assoc($result4);echo '<h4><a href=\\"https://www.w3schools.com\\">Positive quote: '.$row4["quote_content"]."</a></h4>";
+		$row4=mysqli_fetch_assoc($result4);
+		echo '<h4><a href=light.php>Positive quote: '.$row4["quote_content"]."</a></h4>";
 		echo '<img style=\'max-width:90%\'; src="'.$row4["quote_picture"].'"/><br />';
 ?>
 	</p>
@@ -370,7 +391,7 @@ if(($cl=="t")||($cl=="q"))
 <span style="float:left">
 <a href="index.php" class="main_button">Home</a>
 <span class="division_line"></span>
-<a href="" class="main_button">Chat</a>
+<a href="light.php" class="main_button">Light</a>
 <span class="division_line"></span>
 <a href="profile.php" class="main_button">Profile</a>
 </span>

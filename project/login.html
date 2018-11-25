@@ -11,8 +11,14 @@ var xmlHttp;
 			
 		}
 	}
-	
+function PickImage() 
+{
+	var num = 6;
 
+	var n=Math.floor(Math.random()*num+1);
+	document.write("<img src=profiles/index"+n+ ".jpg style=height:200px;width:200px;>");
+	return true;
+}
 function ajaxFunction()
 {
 	xmlHttp=null;
@@ -54,12 +60,50 @@ function stateChange()
 		}
 	}
 }
+function quoFunction()
+{
+	xmlHttp=null;
+	if(window.XMLHttpRequest)
+	{
+		xmlHttp=new XMLHttpRequest();
+	}
+	else if(window.ActiveXObject)
+	{
+		xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	if(xmlHttp!=null)
+	{
+		xmlHttp.onreadystatechange=stateChangeForQuo;
+		xmlHttp.open("GET","fetch_quo.php",true);
+		xmlHttp.send(null);
+	}
+	else
+	{
+		alert("Your browser does not support XMLHTTP.");
+	}
+}
+function stateChangeForQuo()
+{
+	if(xmlHttp.readyState==4)
+	{
+		if(xmlHttp.status==200)
+		{
+			document.getElementById("quoinfo").innerHTML=xmlHttp.responseText;
+		}
+		else
+		{
+			info.innerHTML="Problems in retriving data: "+xmlHttp.statusText;
+		}
+	}
+}
 </script>
 </head>
 <body onkeydown="keylogin();">
 <div style="margin-top:120px;position:absolute;left:10%;width:80%;text-align:right;min-width:950px;min-height:600px;">
-<span class="info_block" style="display:inline-block;width:55%;height:600px;vertical-align:top;">
-A place for encouraging sentences
+<span class="info_block" style="display:inline-block;width:55%;height:600px;vertical-align:top">
+<span class="info_block_content" style="margin-top:100px;">
+<br><br><script>quoFunction()</script><span id="quoinfo"></span><br><br><script>PickImage()</script><br>
+</span>
 </span>
 <span style="display:inline-block;width:5%;"></span>
 <span class="info_block" style="display:inline-block;width:25%;min-width:300px;height:370px;vertical-align:top;padding:30px;text-align:center;">

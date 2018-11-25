@@ -13,7 +13,7 @@
 <script type="text/javascript">
 function PickImage() 
 {
-	var num = 7;
+	var num = 6;
 
 	var n=Math.floor(Math.random()*num+1);
 	document.write("<img src=profiles/index"+n+ ".jpg style=height:200px;width:200px;>");

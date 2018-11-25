@@ -25,6 +25,12 @@
 		$result_num=mysqli_query($con,$query_num);
 		$result_num->data_seek(0);
 		$row_num=$result_num->fetch_assoc();
+		if($row_num["city"]=="")
+		{
+?>
+			<script type="text/javascript">window.location.href="profile.php?q=post"</script>
+<?php
+		}
 		$current_display_profile=$row_num["profile"];
 		$current_display_city=$row_num["city"];
 		$current_display_email=$row_num["email"];
@@ -61,6 +67,21 @@
 	$follower_num = $i;
 	$result_num->free();
 	
+	$like_post="select like_post from `users` where `username` = \"".$current_display_username."\"";
+	$result_post=mysqli_query($con,$like_post);
+	$row_post=mysqli_fetch_array($result_post);
+	$row_post=rtrim($row_post["like_post"]);
+	$ulikes=preg_split("/\s/",$row_post);
+	if($ulikes[0]=="")
+	{
+		$like_num=0;
+	}
+	else
+	{
+		$like_num=count($ulikes);
+	}
+	$result_post->free();
+	
 	$query_post="select `username`,`post_time`,`post_content`,`post_picture` from `post` where `username` = \"".$current_display_username."\" order by `post_time` desc";
 ?>
 <html>
@@ -92,6 +113,40 @@ function submitCheck(f)
 		return true;
 	}
 }
+function followfunc()
+{
+	xmlHttp=null;
+	
+	if(window.XMLHttpRequest)
+	{
+		xmlHttp=new XMLHttpRequest();
+	}
+	else if(window.ActiveXObject)
+	{
+		xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	
+	if (xmlHttp!=null)
+	{
+		xmlHttp.onreadystatechange=stateChange;
+		xmlHttp.open("GET","followfunc.php?main="+"<?php echo $_GET["user"];?>",true);
+		xmlHttp.send(null);
+	}
+}
+function stateChange()
+{
+	if(xmlHttp.readyState==4)
+	{
+		if(xmlHttp.status==200)
+		{
+			if(xmlHttp.responseText=="suc")
+			{
+				document.getElementById("followB").disabled="disabled";
+				document.getElementById("followB").value="Followed";
+			}
+		}
+	}
+}
 </script>
 <title><?php echo "Profile of ".$current_display_username;?></title>
 <link rel="stylesheet" type="text/css" href="theme.css"/>
@@ -119,9 +174,46 @@ function submitCheck(f)
 <?php echo $follower_num;?>
 </span>
 </a>
+<span class="division_line"></span>
+<a href="profile.php?<?php echo "user=".$current_display_username."&";?>q=like" class="main_button">Like
+<span style="padding-left:8px;font-size:16px;">
+<?php echo $like_num;?>
+</span>
+</a>
 </span>
 <?php if(!$display_function){?>
-<input type="button" value="Follow" style="position:absolute;top:12px;right:5%;" class="node_button"/>
+<input id="followB" type="button" style="position:absolute;top:12px;right:5%;" class="node_button" onclick="followfunc()"
+<?php
+	$conn=mysqli_connect("localhost","root","","users");
+	if(!$conn)
+	{
+		echo "Unable to connect database";
+	}
+	$queryfoll="select userone from relation where userone=\"".$_SESSION["username"]."\" and usertwo=\"".$_GET["user"]."\"";
+	$display=false;
+	$result=mysqli_query($con,$queryfoll);
+	$result->data_seek(0);
+	while($row=$result->fetch_assoc())
+	{
+		if($row["userone"]==$_SESSION["username"])
+		{
+			$display=true;
+			break;
+		}
+	}
+	$result->free();
+	
+	if($display)
+	{
+		echo "value=\"Followed\" ";
+		echo "disabled=\"disabled\"";
+	}
+	else
+	{
+		echo "value=\"Follow\"";
+	}
+?>
+/>
 <?php }?>
 </div>
 
@@ -173,7 +265,7 @@ function submitCheck(f)
 
 <span class="info_block" style="display:inline-block;width:100%;min-height:100px;vertical-align:left;text-align:left">
 
-<span style="display:block;margin-top:20px;margin-left:50px;margin-bottom:20px;text-align:left;">
+<span class="info_block_content">
 
 <?php
 	if((!isset($_GET["q"]))||($_GET["q"]=="post"))
@@ -184,7 +276,10 @@ function submitCheck(f)
 		{
 			$time=preg_split("/_/",$row["post_time"]);
 			echo "<h6>".$time[0]."-".$time[1]."-".$time[2]."/".$time[3].":".$time[4].":".$time[5]." by ".$row["username"]."<br/></h6>";
-			echo $row["post_content"]."<br/><br/>";
+			if($row["post_content"]!="")
+			{
+				echo $row["post_content"]."<br/><br/>";
+			}
 			if($row["post_picture"] != "no pic")
 			{
 				echo "<img src = ".$row["post_picture"]." style='max-width:100%'/> <br/>";
@@ -192,25 +287,56 @@ function submitCheck(f)
 		}
 		$result->free();
 	}
-//可以查看自己追踪的用户
+	// Check who is followed by the current user
 	else if($_GET["q"]=="following")
 	{
-		echo "<h3>You have followed these users: </h3>";
+		echo "<h3>Following: </h3>";
 		for ($i=0;$i<$num_row1;$i++){
 			echo "<h4><a href=\"profile.php?user=".$following[$i]."\">".@$following[$i]."</a><br/></h4>";
 		}
 	}
-//可以查看哪些用户追踪了自己
+	// Check who is following the current user
 	else if($_GET["q"]=="follower")
 	{
-		echo "<h3>You have these followers: </h3>";
+		echo "<h3>Followers: </h3>";
 		for ($i=0;$i<$num_row2;$i++){
-			echo "<h4><a href=\"profile.php?user=".$follower[$i]."\">".@$following[$i]."</a><br/></h4>";
+			echo "<h4><a href=\"profile.php?user=".$follower[$i]."\">".@$follower[$i]."</a><br/></h4>";
 		}
 	}
 	else if($_GET["q"]=="like")
 	{
-		echo "This is like board";
+		if($like_num!=0)
+		{
+			$query_no="";
+			for($i=0;$i<count($ulikes);$i++)
+			{
+				if($i!=0)
+				{
+					$query_no=$query_no.",";
+				}
+				$query_no=$query_no.$ulikes[$i];
+			}
+			$query_like="select * from `post` where `post_id` in (".$query_no.") order by post_time desc";
+			$result_like=mysqli_query($con,$query_like);
+			while($row=$result_like->fetch_assoc())
+			{
+				$time=preg_split("/_/",$row["post_time"]);
+				echo "<h6>".$time[0]."-".$time[1]."-".$time[2]."/".$time[3].":".$time[4].":".$time[5]." by ".$row["username"]."<br/></h6>";
+				if($row["post_content"]!="")
+				{
+					echo $row["post_content"]."<br/><br/>";
+				}
+				if($row["post_picture"] != "no pic")
+				{
+					echo "<img src = ".$row["post_picture"]." style='max-width:100%'/> <br/>";
+				}
+			}
+			$result_like->free();
+		}
+		else
+		{
+			echo "There is no post you have liked yet.";
+		}
 	}
 	else if($_GET["q"]=="edit")
 	{
@@ -254,18 +380,8 @@ function submitCheck(f)
 		</tr>
 		
 		<tr>
-		<td>Self Description:</td>
-		<td><input type="text" name="seldes" size="32"value = "没做" /></td>
-		</tr>
-		
-		<tr>
 		<td>Profile Picture:</td>
 		<td><input type="file" name="image" id="image" accept=".jpg,.png" onchange="javascript:imagePreview();" /></td>
-		</tr>
-		
-		<tr>
-		<td>Profile Background:</td>
-		<td><input type="text" name="probg" size="32"value ="没做"/></td>
 		</tr>
 		
 		<tr>
@@ -296,6 +412,7 @@ function submitCheck(f)
 		$change_city=$_POST['city'];
 		$change_gender=$_POST['gender'];
 		$change_birthday=$_POST['birthday'];
+		$pic="";
 		
 		if ($_FILES["image"]["name"]!= null)
 		{
@@ -321,21 +438,28 @@ function submitCheck(f)
 		
 		if($pic=="")
 		{
-			$query="update `users` set `email`='{$change_email}',`city`='{$change_city}',`gender`='{$change_gender}',`birthday`='{$change_birthday}',where `username`='{$_SESSION["username"]}'";
+			$query="update `users` set `email`='{$change_email}',`city`='{$change_city}',`gender`='{$change_gender}',`birthday`='{$change_birthday}' where `username`='{$_SESSION["username"]}'";
 		}
 		else
 		{
 			$query="update `users` set `email`='{$change_email}',`city`='{$change_city}',`gender`='{$change_gender}',`birthday`='{$change_birthday}',`profile`='{$pic}' where `username`='{$_SESSION["username"]}'";
 			$_SESSION["profile"]=$pic;
 		}
-
+		$_SESSION["city"]=$change_city;
+		$_SESSION["email"]=$change_email;
+		
 		$result_num=mysqli_query($con,$query) or die("update failed".mysqli_error($con));
 		
 		echo "Edit done";
+?>
+		<script type="text/javascript">window.location.href="profile.php?q=post"</script>
+<?php
 	}
 	else
 	{
-		header("location:profile.php?q=post");
+?>
+		<script type="text/javascript">window.location.href="profile.php?q=post"</script>
+<?php
 	}
 	$con->close();
 ?>
@@ -355,7 +479,7 @@ function submitCheck(f)
 <span style="float:left">
 <a href="index.php" class="main_button">Home</a>
 <span class="division_line"></span>
-<a href="" class="main_button">Chat</a>
+<a href="light.php" class="main_button">Light</a>
 <span class="division_line"></span>
 <a href="profile.php" class="main_button">Profile</a>
 </span>
