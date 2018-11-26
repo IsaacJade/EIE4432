@@ -103,7 +103,6 @@ if(!isset($_GET["content"]))
 }
 else
 {
-	session_start();
 	date_default_timezone_set("Asia/Hong_Kong");
 	$xx=$_GET["content"];
 	$xx=trim($xx);
